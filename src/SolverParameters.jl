@@ -1,5 +1,5 @@
 module SolverParameters
 
-# Write your package code here.
+include("domains.jl")
 
 end
