@@ -1,10 +1,17 @@
 import Base.in
 
-export AbstractDomain, RealDomain, RealInterval, IntegerDomain,
-IntegerRange, BinaryDomain, BinaryRange, IntegerSet, CategoricalDomain, CategoricalSet
+export AbstractDomain,
+  RealDomain,
+  RealInterval,
+  IntegerDomain,
+  IntegerRange,
+  BinaryDomain,
+  BinaryRange,
+  IntegerSet,
+  CategoricalDomain,
+  CategoricalSet
 
 export ∈, lower, upper, eltype
-
 
 """`AbstractDomain`
 

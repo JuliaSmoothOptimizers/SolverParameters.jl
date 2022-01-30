@@ -1,8 +1,16 @@
 export AbstractParameter, AbstractSolverParameter, AbstractHyperParameter, AlgorithmicParameter
 
-export default, domain, name, granularity, set_default!, find, lower_bounds,
-upper_bounds, current_param_values, granularities, input_types
-
+export default,
+  domain,
+  name,
+  granularity,
+  set_default!,
+  find,
+  lower_bounds,
+  upper_bounds,
+  current_param_values,
+  granularities,
+  input_types
 
 """`AbstractParameter`
 
@@ -91,7 +99,10 @@ function check_default(domain::AbstractDomain{T}, new_value::T) where {T}
 end
 
 """Set default value of an algorithmic parameter."""
-function set_default!(parameter::AlgorithmicParameter{T}, new_value::F) where {T, F <: AbstractFloat}
+function set_default!(
+  parameter::AlgorithmicParameter{T},
+  new_value::F,
+) where {T, F <: AbstractFloat}
   if nomad_type(eltype(domain(parameter))) == "I"
     new_value = round(Int, new_value)
   end

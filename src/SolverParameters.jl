@@ -1,5 +1,5 @@
 module SolverParameters
 
-  include("domains.jl")
-  include("parameters.jl")
+include("domains.jl")
+include("parameters.jl")
 end
