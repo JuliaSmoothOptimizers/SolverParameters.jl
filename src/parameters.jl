@@ -94,8 +94,9 @@ nomad_type(::Type{T}) where {T <: Real} = "R"
 nomad_type(::Type{T}) where {T <: Integer} = "I"
 nomad_type(::Type{T}) where {T <: Bool} = "B"
 
-function check_default(domain::AbstractDomain{T}, new_value::T) where {T}
-  new_value ∈ domain || error("default value should be in domain")
+function check_default(domain::AbstractDomain{T}, new_value::P) where {T, P <:Real}
+
+  T(new_value) ∈ domain || error("default value should be in domain")
 end
 
 """Set default value of an algorithmic parameter."""
