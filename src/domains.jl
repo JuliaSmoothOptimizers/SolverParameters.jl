@@ -1,4 +1,5 @@
 import Base.in
+import Base.ϵ
 
 export AbstractDomain,
   RealDomain,
@@ -11,7 +12,7 @@ export AbstractDomain,
   CategoricalDomain,
   CategoricalSet
 
-export ∈, lower, upper, eltype
+# export ∈, lower, upper, eltype
 
 """`AbstractDomain`
 
