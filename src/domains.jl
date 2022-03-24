@@ -1,4 +1,5 @@
 import Base.in
+import Base.ϵ
 
 export AbstractDomain,
   RealDomain,
