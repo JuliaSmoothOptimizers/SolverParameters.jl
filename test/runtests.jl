@@ -1,6 +1,6 @@
-using SolverParameters
 using Test
+using SolverParameters
 
-@testset "SolverParameters.jl" begin
-  # Write your tests here.
-end
+const TYPES = (Int, Float32, Float64)
+
+include("test_domains.jl")

@@ -1,5 +1,5 @@
 import Base.in
-import Base.ϵ
+import Base.∈
 
 export AbstractDomain,
   RealDomain,
@@ -12,7 +12,7 @@ export AbstractDomain,
   CategoricalDomain,
   CategoricalSet
 
-export ∈, lower, upper, eltype
+export lower, upper
 
 """`AbstractDomain`
 
@@ -29,12 +29,11 @@ Child types don't need any specific field, but they should implement the followi
 """
 abstract type AbstractDomain{T} end
 
-eltype(::AbstractDomain{T}) where {T} = T
 ∈(::T, ::AbstractDomain{T}) where {T} = false
 in(x::T, D::AbstractDomain{T}) where {T} = x ∈ D
-lower(::AbstractDomain{T}) where {T <: AbstractString} =
+lower(::AbstractDomain{T}) where {T} =
   error("Lower bound is undefined for this domain.")
-upper(::AbstractDomain{T}) where {T <: AbstractString} =
+upper(::AbstractDomain{T}) where {T} =
   error("Upper bound is undefined for this domain.")
 
 """
@@ -83,7 +82,7 @@ lower(D::IntegerRange) = D.lower
 upper(D::IntegerRange) = D.upper
 
 ∈(x::T, D::IntegerRange{T}) where {T <: Integer} = lower(D) ≤ x ≤ upper(D)
-
+in(x::T, D::IntegerRange{T}) where {T <: Integer} = ∈(x,D)
 """
 Binary range for boolean parameters.
 Note: This concrete type is not mutable as it would break the purpose of a binary range.
@@ -122,3 +121,4 @@ mutable struct CategoricalSet{T <: AbstractString} <: CategoricalDomain{T}
 end
 CategoricalSet() = CategoricalSet(Vector{AbstractString}())
 ∈(x::T, D::CategoricalSet{T}) where {T <: AbstractString} = x in D.categories
+in(x::T, D::CategoricalSet{T}) where {T <: AbstractString} = ∈(x, D)
