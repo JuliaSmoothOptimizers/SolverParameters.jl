@@ -12,3 +12,4 @@
     end
 end
 include("test_real_domains.jl")
+include("test_categorical_domains.jl")
