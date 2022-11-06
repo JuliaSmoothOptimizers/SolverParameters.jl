@@ -5,9 +5,9 @@
             min = typemin(T)
             max = typemax(T)
             d_closed = RealInterval(min, max)
-            d_lopen = RealInterval(min, max, true, false)
-            d_ropen = RealInterval(min, max, false, true)
-            d_open = RealInterval(min, max, true, true)
+            d_lopen = RealInterval(min, max; lower_open=true, upper_open=false)
+            d_ropen = RealInterval(min, max, lower_open=false, upper_open=true)
+            d_open = RealInterval(min, max, lower_open=true, upper_open=true)
             @testset "∈" verbose=true begin
                 @test (min ∈ d_closed) == true
                 @test (max ∈ d_closed) == true
