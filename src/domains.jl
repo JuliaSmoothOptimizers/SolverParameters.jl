@@ -47,7 +47,7 @@ mutable struct RealInterval{T <: Real} <: RealDomain{T}
   upper_open::Bool
   function RealInterval(
     lower::T,
-    upper::T,
+    upper::T;
     lower_open::Bool = false,
     upper_open::Bool = false,
   ) where {T <: Real}
