@@ -50,7 +50,7 @@ domain(parameter::Parameter{T}) where {T} = parameter.domain
 name(parameter::Parameter{T}) where {T} = parameter.name
 
 function check_value(domain::AbstractDomain{T}, new_value::P) where {T, P <:Real}
-  T(new_value) ∈ domain || error("value should be in domain")
+  T(new_value) ∈ domain || throw(DomainError("value $(new_value) should be in domain"))
 end
 
 """Set value of an algorithmic parameter."""
