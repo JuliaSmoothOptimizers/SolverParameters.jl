@@ -18,7 +18,7 @@
                 @test (min ∈ d_open || max ∈ d_open) == false
             end
             @testset "constructor" verbose=true begin
-                @test_throws r"must be less than upper bound" RealInterval(max, min)
+                @test_throws ErrorException RealInterval(max, min)
             end
         end
     end
@@ -31,7 +31,7 @@
             @test (max ∈ d) == true
         end
         @testset "constructor" verbose=true begin
-            @test_throws r"must be less than upper bound" IntegerRange(max, min)
+            @test_throws ErrorException IntegerRange(max, min)
         end
     end
     @testset "Binary range" begin

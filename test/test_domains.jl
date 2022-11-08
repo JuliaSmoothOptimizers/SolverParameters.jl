@@ -7,8 +7,8 @@
         mock_domain = MockDomain(T(0), T(1))
         @test  (T(0) ∈ mock_domain) == false
         @test (T(0) in mock_domain) == false
-        @test_throws r"Lower bound is undefined"i lower(mock_domain)
-        @test_throws r"Upper bound is undefined"i upper(mock_domain)
+        @test_throws ErrorException lower(mock_domain)
+        @test_throws ErrorException upper(mock_domain)
     end
 end
 include("test_real_domains.jl")
