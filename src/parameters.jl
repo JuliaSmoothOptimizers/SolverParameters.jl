@@ -11,10 +11,13 @@ export value,
 """ `AbstractParameterSet`
 An abstract type that represents a set of multiple parameters. 
   Ex:
+  ```
   mutable struct MySolverParameterSet <: AbstractParameterSet
     η₁::Parameter(1.0e-5, RealInterval(0, 1; lower_open=true, upper_open=false))
   end
-"""  
+  ```
+"""
+
 abstract type AbstractParameterSet end
 
 
@@ -26,9 +29,7 @@ abstract type AbstractParameter{T} end
 
 """`AlgorithmicParameter`
 
-Child type of `Parameter` that exposes a specific hyperparameter.
-It contains specific fields that can be given to `NOMAD`.
-
+Child type of `AbstractParameter` that exposes a specific parameter.
 """
 mutable struct Parameter{T, D <: AbstractDomain{T}} <: AbstractParameter{T}
   value::T
@@ -40,16 +41,16 @@ mutable struct Parameter{T, D <: AbstractDomain{T}} <: AbstractParameter{T}
   end
 end
 
-
 """Returns the current value of a parameter."""
 value(parameter::Parameter{T}) where {T} = parameter.value
 
+"""Returns the domain of a parameter."""
 domain(parameter::Parameter{T}) where {T} = parameter.domain
 
 """Returns the name of a parameter."""
 name(parameter::Parameter{T}) where {T} = parameter.name
 
-function check_value(domain::AbstractDomain{T}, new_value::P) where {T, P <:Real}
+function check_value(domain::AbstractDomain{T}, new_value::P) where {T, P}
   T(new_value) ∈ domain || throw(DomainError("value $(new_value) should be in domain"))
 end
 
