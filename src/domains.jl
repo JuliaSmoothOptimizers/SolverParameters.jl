@@ -32,10 +32,9 @@ abstract type AbstractDomain{T} end
 ∈(::T, ::AbstractDomain{T}) where {T} = false
 in(x::T, D::AbstractDomain{T}) where {T} = x ∈ D
 lower(::AbstractDomain{T}) where {T} =
-  error("Lower bound is undefined for this domain.")
+  throw(DomainError("Lower bound is undefined for this domain."))
 upper(::AbstractDomain{T}) where {T} =
-  error("Upper bound is undefined for this domain.")
-
+  throw(DomainError("Upper bound is undefined for this domain."))
 """
 Real Domain for continuous variables
 """
