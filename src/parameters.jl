@@ -1,12 +1,6 @@
 export AbstractParameterSet, AbstractParameter, Parameter
 
-export value,
-  domain,
-  name,
-  set_value!,
-  lower_bounds,
-  upper_bounds
-
+export value, domain, name, set_value!, lower_bounds, upper_bounds
 
 """ `AbstractParameterSet`
 An abstract type that represents a set of multiple parameters. 
@@ -19,7 +13,6 @@ An abstract type that represents a set of multiple parameters.
 """
 
 abstract type AbstractParameterSet end
-
 
 """`AbstractParameter`
 
@@ -55,10 +48,7 @@ function check_value(domain::AbstractDomain{T}, new_value::P) where {T, P}
 end
 
 """Set value of an algorithmic parameter."""
-function set_value!(
-  parameter::Parameter{T},
-  new_value::F,
-) where {T, F}
+function set_value!(parameter::Parameter{T}, new_value::F) where {T, F}
   check_value(domain(parameter), new_value)
   parameter.value = new_value
 end
@@ -72,5 +62,3 @@ end
 function upper_bounds(parameters::AbstractVector{P}) where {P <: Parameter}
   [upper(domain(p)) for p ∈ parameters]
 end
-
-
