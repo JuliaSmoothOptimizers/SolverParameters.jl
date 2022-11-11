@@ -81,7 +81,7 @@ lower(D::IntegerRange) = D.lower
 upper(D::IntegerRange) = D.upper
 
 ∈(x::T, D::IntegerRange{T}) where {T <: Integer} = lower(D) ≤ x ≤ upper(D)
-in(x::T, D::IntegerRange{T}) where {T <: Integer} = ∈(x,D)
+in(x::T, D::IntegerRange{T}) where {T <: Integer} = ∈(x, D)
 """
 Binary range for boolean parameters.
 Note: This concrete type is not mutable as it would break the purpose of a binary range.

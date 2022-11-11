@@ -14,30 +14,31 @@ function MockSolverParamSet32()
   I = Int32
   R = Float32
   MockSolverParamSet32(
-    Parameter(R(1.5e-10), RealInterval(R(0.0),R(1.0)), "real"),
+    Parameter(R(1.5e-10), RealInterval(R(0.0), R(1.0)), "real"),
     Parameter(I(5), IntegerRange(I(5), I(20)), "int_r"),
-    Parameter(I(5), IntegerSet(I[2,4,5,1,3,7]), "int_s")
+    Parameter(I(5), IntegerSet(I[2, 4, 5, 1, 3, 7]), "int_s"),
   )
 end
 function MockSolverParamSet64()
   I = Int64
   MockSolverParamSet64(
-    Parameter(1.5e-10, RealInterval(0.0,1.0), "real"),
+    Parameter(1.5e-10, RealInterval(0.0, 1.0), "real"),
     Parameter(I(5), IntegerRange(I(5), I(20)), "int_r"),
-    Parameter(I(5), IntegerSet(I[2,4,5,1,3,7]), "int_s")
+    Parameter(I(5), IntegerSet(I[2, 4, 5, 1, 3, 7]), "int_s"),
   )
 end
 
-@testset "Parameter set for $(PRECISION)" for (PRECISION) in ["single precision", "double precision"]
+@testset "Parameter set for $(PRECISION)" for (PRECISION) in
+                                              ["single precision", "double precision"]
   param_set = (PRECISION == "single precision") ? MockSolverParamSet32() : MockSolverParamSet64()
-  R =  (PRECISION == "single precision") ? Float32 : Float64
+  R = (PRECISION == "single precision") ? Float32 : Float64
   I = (PRECISION == "single precision") ? Int32 : Int64
-  @testset "Real Parameter" verbose=true begin
+  @testset "Real Parameter" verbose = true begin
     param = param_set.real
     @test_throws DomainError set_value!(param, -1)
-    set_value!(param, 2/3)
+    set_value!(param, 2 / 3)
     @testset "Testing getters" begin
-      @test value(param) == R(2/3)
+      @test value(param) == R(2 / 3)
       param_domain = domain(param)
       @test (param_domain isa RealInterval{R}) == true
       @test name(param) == "real"
@@ -67,7 +68,7 @@ end
   end
 end
 
-@testset "Categorical parameters" verbose=true begin
+@testset "Categorical parameters" verbose = true begin
   param = Parameter("A", CategoricalSet(["A", "B", "C"]), "categorical_param")
   @test_throws DomainError set_value!(param, "D")
   set_value!(param, "B")
