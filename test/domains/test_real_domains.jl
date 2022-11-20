@@ -36,8 +36,8 @@
   end
   @testset "Binary range" begin
     b = BinaryRange()
-    @test b.lower == false
-    @test b.upper == true
+    @test lower(b) == false
+    @test upper(b) == true
   end
   @testset "IntegerSet" verbose = true begin
     d = IntegerSet([2, 4, 5, 1, 3, 7])
