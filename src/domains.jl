@@ -88,16 +88,12 @@ Note: This concrete type is not mutable as it would break the purpose of a binar
 e.g:
 b = BinaryRange()
 """
-abstract type BinaryDomain{T <: Bool} <: AbstractDomain{T} end
-struct BinaryRange{T <: Bool} <: BinaryDomain{T}
-  lower::T
-  upper::T
-  BinaryRange(l::T, u::T) where {T <: Bool} = new{T}(l, u)
+struct BinaryRange{T <: Bool}
+  BinaryRange() = new{Bool}()
 end
-BinaryRange() = BinaryRange(false, true)
-lower(D::BinaryRange{Bool}) = D.lower
-upper(D::BinaryRange{Bool}) = D.upper
-∈(x::T, D::BinaryRange{T}) where {T <: Bool} = lower(D) ≤ x ≤ upper(D)
+lower(D::BinaryRange{Bool}) = false
+upper(D::BinaryRange{Bool}) = true
+∈(x::T, D::BinaryRange{T}) where {T <: Bool} = true
 
 mutable struct IntegerSet{T <: Integer} <: IntegerDomain{T}
   set::Set{T}
