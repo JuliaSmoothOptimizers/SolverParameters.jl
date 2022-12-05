@@ -1,6 +1,5 @@
 import Base.in
 import Base.∈
-
 export AbstractDomain,
   RealDomain,
   RealInterval,
