@@ -71,3 +71,18 @@ end
     @test name(param) == "categorical_param"
   end
 end
+
+@testset "ParameterSruct methods" verbose=true begin
+  I = Int64
+  F = Float64
+  param_set = MockSolverParamSet(I, F)
+  set_names!(param_set)
+
+  @test names(param_set) == Vector{String}(["real_inf", "real", "int_r", "int_s"])
+  @test length(param_set) == 4
+  @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5])
+  update!(param_set, Vector{Any}([1000.1, 2/3, 20, 1]))
+  @test values(param_set) == Vector{Any}([1000.1, 2/3, 20, 1])
+
+
+end
