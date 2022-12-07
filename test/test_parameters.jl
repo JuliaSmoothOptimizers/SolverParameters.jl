@@ -16,11 +16,12 @@ end
 
 @testset "Parameter set for $(PRECISION)" for (PRECISION) in
                                               ["single precision", "double precision"]
-  I, F = (PRECISION == "single precision") ? (Int32, Float32) : (Int64, Float64)                                           
+  I, F = (PRECISION == "single precision") ? (Int32, Float32) : (Int64, Float64)
   param_set = MockSolverParamSet(I, F)
 
   set_names!(param_set)
-  @testset "check fieldname is the name of each parameter" for f_name in fieldnames(typeof(param_set))
+  @testset "check fieldname is the name of each parameter" for f_name in
+                                                               fieldnames(typeof(param_set))
     @test name(getfield(param_set, f_name)) == string(f_name)
   end
   @test lower_bounds(param_set) == [-Inf, 0.0, 5, 1]
@@ -72,7 +73,7 @@ end
   end
 end
 
-@testset "ParameterSruct methods" verbose=true begin
+@testset "ParameterSruct methods" verbose = true begin
   I = Int64
   F = Float64
   param_set = MockSolverParamSet(I, F)
@@ -81,8 +82,6 @@ end
   @test names(param_set) == Vector{String}(["real_inf", "real", "int_r", "int_s"])
   @test length(param_set) == 4
   @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5])
-  update!(param_set, Vector{Any}([1000.1, 2/3, 20, 1]))
-  @test values(param_set) == Vector{Any}([1000.1, 2/3, 20, 1])
-
-
+  update!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1]))
+  @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 20, 1])
 end

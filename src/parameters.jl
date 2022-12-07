@@ -27,7 +27,9 @@ end
 
 """Returns the name of the parameters in a parameter set in place."""
 function names!(parameter_set::T, vals::Vector{String}) where {T <: AbstractParameterSet}
-  length(parameter_set) == length(vals) || error("Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).")
+  length(parameter_set) == length(vals) || error(
+    "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
+  )
   for (i, param_name) in enumerate(fieldnames(T))
     p = getfield(parameter_set, param_name)
     vals[i] = name(p)
@@ -51,17 +53,21 @@ end
 
 """Returns current values of each parameter in a parameter set in place."""
 function values!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
-  length(parameter_set) == length(vals) || error("Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).")
+  length(parameter_set) == length(vals) || error(
+    "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
+  )
   for (i, param_name) in enumerate(fieldnames(T))
     p = getfield(parameter_set, param_name)
     vals[i] = value(p)
   end
   return vals
- end
+end
 
 """Updates the values of a parameter set by the values given in a vector of values."""
 function update!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
-  length(parameter_set) == length(new_values) || error("Error: 'new_values' should have length $(length(parameter_set)), but has length $(length(new_values)).")
+  length(parameter_set) == length(new_values) || error(
+    "Error: 'new_values' should have length $(length(parameter_set)), but has length $(length(new_values)).",
+  )
   for (i, param_name) in enumerate(fieldnames(T))
     p = getfield(parameter_set, param_name)
     converted_value = convert(p, new_values[i])
@@ -77,8 +83,10 @@ end
 
 """Returns lower bounds of each parameter in a parameter set in place."""
 function lower_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
-  length(parameter_set) == length(vals) || error("Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).")
-  for (i,param_name) in enumerate(fieldnames(T))
+  length(parameter_set) == length(vals) || error(
+    "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
+  )
+  for (i, param_name) in enumerate(fieldnames(T))
     p = getfield(parameter_set, param_name)
     d = domain(p)
     vals[i] = lower(d)
@@ -94,7 +102,9 @@ end
 
 """Returns upper bounds of each parameter in a parameter set in place."""
 function upper_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
-  length(parameter_set) == length(vals) || error("Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).")
+  length(parameter_set) == length(vals) || error(
+    "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
+  )
   for (i, param_name) in enumerate(fieldnames(T))
     p = getfield(parameter_set, param_name)
     d = domain(p)
@@ -125,7 +135,7 @@ end
 
 """Constructor of a continuous parameter x ∈ R bounded by (-∞, ∞)."""
 function Parameter(value::T, name::String) where {T <: AbstractFloat}
-  domain = RealInterval(T(-Inf), T(Inf); lower_open=true, upper_open=true)
+  domain = RealInterval(T(-Inf), T(Inf); lower_open = true, upper_open = true)
   Parameter(value, domain, name)
 end
 
@@ -160,12 +170,12 @@ function convert(::Parameter{T}, value::P) where {T, P <: AbstractFloat}
   return convert(T, value)
 end
 
-function check_value(domain::AbstractDomain{T}, new_value::T) where T
+function check_value(domain::AbstractDomain{T}, new_value::T) where {T}
   new_value ∈ domain || throw(DomainError("value $(new_value) should be in domain"))
 end
 
 """Set value of a parameter."""
-function set_value!(parameter::Parameter{T}, new_value::T) where T
+function set_value!(parameter::Parameter{T}, new_value::T) where {T}
   check_value(domain(parameter), new_value)
   parameter.value = new_value
 end
