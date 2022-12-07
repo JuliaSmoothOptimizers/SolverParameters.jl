@@ -1,6 +1,5 @@
 module SolverParameters
 
-import Base.in
 import Base.∈
 import Base.length
 import Base.values
