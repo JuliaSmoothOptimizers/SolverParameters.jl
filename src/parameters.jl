@@ -3,7 +3,7 @@ export AbstractParameterSet, AbstractParameter, Parameter
 export value, domain, name, names!, set_value!, update!, lower_bounds, upper_bounds, set_names!
 
 """ `AbstractParameterSet`
-An abstract type that represents a set of multiple parameters. 
+An abstract type that represents a set of multiple parameters.
   Ex:
   ```
   mutable struct MySolverParameterSet <: AbstractParameterSet
@@ -19,11 +19,13 @@ function length(::T) where {T <: AbstractParameterSet}
   return length(fieldnames(T))
 end
 
+"""Returns the name of the parameters in a parameter set."""
 function names(parameter_set::T) where {T <: AbstractParameterSet}
   n = Vector{String}(undef, length(parameter_set))
   return names!(parameter_set, n)
 end
 
+"""Returns the name of the parameters in a parameter set in place."""
 function names!(parameter_set::T, vals::Vector{String}) where {T <: AbstractParameterSet}
   length(parameter_set) == length(vals) || error("Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).")
   for (i, param_name) in enumerate(fieldnames(T))
@@ -60,7 +62,6 @@ function values!(parameter_set::T, vals::AbstractVector) where {T <: AbstractPar
 """Updates the values of a parameter set by the values given in a vector of values."""
 function update!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
   length(parameter_set) == length(new_values) || error("Error: 'new_values' should have length $(length(parameter_set)), but has length $(length(new_values)).")
-  @info new_values
   for (i, param_name) in enumerate(fieldnames(T))
     p = getfield(parameter_set, param_name)
     converted_value = convert(p, new_values[i])
@@ -122,11 +123,13 @@ mutable struct Parameter{T, D <: AbstractDomain{T}} <: AbstractParameter{T}
   end
 end
 
+"""Constructor of a continuous parameter x ∈ R bounded by (-∞, ∞)."""
 function Parameter(value::T, name::String) where {T <: AbstractFloat}
   domain = RealInterval(T(-Inf), T(Inf); lower_open=true, upper_open=true)
   Parameter(value, domain, name)
 end
 
+"""Constructor of a discrete parameter x ∈ Z bounded by (-`typemin(x)`, `typemax(x)`)."""
 function Parameter(value::T, name::String) where {T <: Integer}
   domain = IntegerRange(typemin(T), typemax(T))
   Parameter(value, domain, name)
