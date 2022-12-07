@@ -1,7 +1,3 @@
-import Base.length
-import Base.values
-import Base.names
-import Base.convert
 export AbstractParameterSet, AbstractParameter, Parameter
 
 export value, domain, name, names!, set_value!, update!, lower_bounds, upper_bounds, set_names!
