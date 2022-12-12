@@ -82,7 +82,7 @@ Note: This concrete type is not mutable as it would break the purpose of a binar
 e.g:
 b = BinaryRange()
 """
-struct BinaryRange{T <: Bool}
+struct BinaryRange{T <: Bool} <: IntegerDomain{T}
   BinaryRange() = new{Bool}()
 end
 lower(D::BinaryRange{Bool}) = false
