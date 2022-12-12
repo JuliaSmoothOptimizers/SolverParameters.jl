@@ -134,14 +134,19 @@ mutable struct Parameter{T, D <: AbstractDomain{T}} <: AbstractParameter{T}
 end
 
 """Constructor of a continuous parameter x ∈ R bounded by (-∞, ∞)."""
-function Parameter(value::T, name::String) where {T <: AbstractFloat}
+function Parameter(value::T; name::String="") where {T <: AbstractFloat}
   domain = RealInterval(T(-Inf), T(Inf); lower_open = true, upper_open = true)
   Parameter(value, domain, name)
 end
 
 """Constructor of a discrete parameter x ∈ Z bounded by (-`typemin(x)`, `typemax(x)`)."""
-function Parameter(value::T, name::String) where {T <: Integer}
+function Parameter(value::T; name::String = "") where {T <: Integer}
   domain = IntegerRange(typemin(T), typemax(T))
+  Parameter(value, domain, name)
+end
+
+"""Constructor of an arbitrary parameter whose default name is an empty string."""
+function Parameter(value::T, domain::AbstractDomain{T}; name::String = "") where {T}
   Parameter(value, domain, name)
 end
 
