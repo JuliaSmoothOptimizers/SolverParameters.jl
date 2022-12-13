@@ -134,7 +134,7 @@ mutable struct Parameter{T, D <: AbstractDomain{T}} <: AbstractParameter{T}
 end
 
 """Constructor of a continuous parameter x ∈ R bounded by (-∞, ∞)."""
-function Parameter(value::T; name::String="") where {T <: AbstractFloat}
+function Parameter(value::T; name::String = "") where {T <: AbstractFloat}
   domain = RealInterval(T(-Inf), T(Inf); lower_open = true, upper_open = true)
   Parameter(value, domain, name)
 end
