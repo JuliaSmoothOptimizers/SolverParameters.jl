@@ -4,14 +4,14 @@ export value, domain, name, names!, set_value!, update!, lower_bounds, upper_bou
 
 """ `AbstractParameterSet`
 An abstract type that represents a set of multiple parameters.
-  Ex:
-  ```
+
+Example:
+```julia
   mutable struct MySolverParameterSet <: AbstractParameterSet
     η₁::Parameter(1.0e-5, RealInterval(0, 1; lower_open=true, upper_open=false))
   end
-  ```
+```
 """
-
 abstract type AbstractParameterSet end
 
 """Returns the number of parameters in a parameter set."""
