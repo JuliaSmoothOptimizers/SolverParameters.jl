@@ -85,3 +85,40 @@ end
   update!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1]))
   @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 20, 1])
 end
+
+struct CatMockSolverParamSet{I, F} <: AbstractParameterSet
+  real_inf::Parameter{F, RealInterval{F}}
+  real::Parameter{String, CategoricalSet{String}}
+  int_r::Parameter{I, IntegerRange{I}}
+end
+
+function CatMockSolverParamSet()
+  CatMockSolverParamSet(
+    Parameter(Float64(42)),
+    Parameter("A", CategoricalSet(["A", "B", "C", "D"])),
+    Parameter(Int32(5), IntegerRange(Int32(5), Int32(20))),
+  )
+end
+
+@testset "Numerical/Categorical parameters in ParameterSet" begin
+  param_set = CatMockSolverParamSet()
+
+  @test SolverParameters.length_num(param_set) == 2
+  @test SolverParameters.length(param_set) == 3
+
+  @test values(param_set) == [42.0, "A", 5]
+  b = zeros(Float64, 2)
+  @test SolverParameters.values_num!(param_set, b) == [42.0, 5.0]
+  b = zeros(Float32, 2)
+  @test SolverParameters.values_num!(param_set, b) == Float32[42.0, 5.0]
+  b = zeros(Int32, 2)
+  @test SolverParameters.values_num!(param_set, b) == Int32[42.0, 5.0]
+
+  SolverParameters.update_num!(param_set, [42.5, 5.6])
+  @test values(param_set) == [42.5, "A", 6]
+
+  b = zeros(Float32, 2)
+  @test SolverParameters.values_num!(param_set, b) == Float32[42.5, 6.0]
+  b = zeros(Int32, 2)
+  @test_throws InexactError SolverParameters.values_num!(param_set, b) # because it cannot convert 42.5 as integer
+end
