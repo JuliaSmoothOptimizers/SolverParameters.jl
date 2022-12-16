@@ -1,6 +1,7 @@
 export AbstractParameterSet, AbstractParameter, Parameter
 
 export value, domain, name, names!, set_value!, update!, lower_bounds, upper_bounds, set_names!
+export length_num, values_num!, update_num!
 
 """ `AbstractParameterSet`
 An abstract type that represents a set of multiple parameters.
