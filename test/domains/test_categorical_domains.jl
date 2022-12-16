@@ -5,4 +5,11 @@
   @test ("E" ∈ d) == false
   @test_throws DomainError lower(d)
   @test_throws DomainError upper(d)
+
+  d = CategoricalSet([:france, :argentine])
+  @test (:france ∈ d) == true
+  @test (:argentine ∈ d) == true
+  @test (:canada ∈ d) == false
+  @test_throws DomainError lower(d)
+  @test_throws DomainError upper(d)
 end
