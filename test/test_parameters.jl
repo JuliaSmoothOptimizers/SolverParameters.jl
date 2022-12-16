@@ -81,6 +81,8 @@ end
 
   @test names(param_set) == Vector{String}(["real_inf", "real", "int_r", "int_s"])
   @test length(param_set) == 4
+  a = @allocated length(param_set)
+  @test a == 0
   @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5])
   update!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1]))
   @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 20, 1])
