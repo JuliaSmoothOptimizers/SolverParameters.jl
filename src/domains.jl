@@ -14,15 +14,15 @@ export lower, upper
 """`AbstractDomain`
 
 An abstract domain type that superseeds any specific domain implementation.
-Child types don't need any specific field, but they should implement the following functions:
+Child types should implement the following functions:
 
-- `lower(d::ChildDomain{T})`
-- `upper(d::ChildDomain{T})`
-- `∈(x::T, D::ChildDomain{T})`
+- `lower(d::ChildDomain{T})`: return the lower bound of the domain;
+- `upper(d::ChildDomain{T})`: return the upper bound of the domain;
+- `∈(x::T, D::ChildDomain{T})`: return `true` if a value `x` is in the domain and `false` otherwise.
 
-- `lower` should return the lower bound of the domain.
-- `upper` should return the upper bound of the domain.
-- `∈` should return `true` if a value `x` is in the domain and `false` otherwise.
+See [`RealInterval`](@ref), [`IntegerRange`](@ref), [`IntegerSet`](@ref), [`BinaryRange`](@ref), [`CategoricalSet`](@ref) for concrete implementations.
+
+`lower` and `upper` are not implemented for categorical domains.
 """
 abstract type AbstractDomain{T} end
 
@@ -31,10 +31,22 @@ lower(::AbstractDomain{T}) where {T} =
   throw(DomainError("Lower bound is undefined for this domain."))
 upper(::AbstractDomain{T}) where {T} =
   throw(DomainError("Upper bound is undefined for this domain."))
+
 """
 Real Domain for continuous variables
 """
 abstract type RealDomain{T <: Real} <: AbstractDomain{T} end
+
+"""
+    RealInterval{T <: Integer} <: IntegerDomain{T}
+
+Interval of possible values for a real variable.
+
+Examples:
+```julia
+RealInterval(1.3, 4.9)
+```
+"""
 mutable struct RealInterval{T <: Real} <: RealDomain{T}
   lower::T
   upper::T
@@ -59,10 +71,22 @@ end
 
 """
 Integer Domain for discrete variables.
-    1. Integer range
-    2. Integer Set
-    """
+    1. Integer range;
+    2. Integer Set;
+    3. BinaryRange.
+"""
 abstract type IntegerDomain{T <: Integer} <: AbstractDomain{T} end
+
+"""
+    IntegerRange{T <: Integer} <: IntegerDomain{T}
+
+Interval of possible values for an integer variable.
+
+Examples:
+```julia
+IntegerRange(1, 4)
+```
+"""
 mutable struct IntegerRange{T <: Integer} <: IntegerDomain{T}
   lower::T
   upper::T
@@ -76,11 +100,17 @@ lower(D::IntegerRange) = D.lower
 upper(D::IntegerRange) = D.upper
 
 ∈(x::T, D::IntegerRange{T}) where {T <: Integer} = lower(D) ≤ x ≤ upper(D)
+
 """
+    BinaryRange{T <: Bool} <: IntegerDomain{T}
+
 Binary range for boolean parameters.
 Note: This concrete type is not mutable as it would break the purpose of a binary range.
-e.g:
-b = BinaryRange()
+
+Examples:
+```julia
+BinaryRange()
+```
 """
 struct BinaryRange{T <: Bool} <: IntegerDomain{T}
   BinaryRange() = new{Bool}()
@@ -89,6 +119,16 @@ lower(D::BinaryRange{Bool}) = false
 upper(D::BinaryRange{Bool}) = true
 ∈(x::T, D::BinaryRange{T}) where {T <: Bool} = true
 
+"""
+    IntegerSet{T} <: IntegerDomain{T}
+
+Set of possible values for an integer variable.
+
+Examples:
+```julia
+IntegerSet(1, 3, 4)
+```
+"""
 mutable struct IntegerSet{T <: Integer} <: IntegerDomain{T}
   set::Set{T}
 
@@ -104,9 +144,22 @@ upper(D::IntegerSet{T}) where {T <: Integer} = max(D.set...)
 """
 Categorical Domain for categorical variables.
 """
-abstract type CategoricalDomain{T <: AbstractString} <: AbstractDomain{T} end
-mutable struct CategoricalSet{T <: AbstractString} <: CategoricalDomain{T}
+abstract type CategoricalDomain{T} <: AbstractDomain{T} end
+
+"""
+    CategoricalSet{T} <: CategoricalDomain{T}
+
+Set of possible values for a categorical variable.
+
+Examples:
+```julia
+CategoricalSet()
+CategoricalSet("A", "B")
+CategoricalSet(:A, :B)
+```
+"""
+mutable struct CategoricalSet{T} <: CategoricalDomain{T}
   categories::Vector{T}
 end
-CategoricalSet() = CategoricalSet(Vector{AbstractString}())
-∈(x::T, D::CategoricalSet{T}) where {T <: AbstractString} = x in D.categories
+CategoricalSet() = CategoricalSet(Vector{String}())
+∈(x::T, D::CategoricalSet{T}) where {T} = x in D.categories
