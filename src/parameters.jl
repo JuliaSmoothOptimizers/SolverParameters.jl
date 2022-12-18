@@ -79,9 +79,8 @@ end
 """Returns current values of each numerical parameter in a parameter set in place."""
 function values_num!(parameter_set::T, vals::AbstractVector{S}) where {T <: AbstractParameterSet, S}
   len = length_num(parameter_set)
-  len == length(vals) || error(
-    "Error: 'vals' should have length $(len), but has length $(length(vals)).",
-  )
+  len == length(vals) ||
+    error("Error: 'vals' should have length $(len), but has length $(length(vals)).")
   i = 0
   for param_name in fieldnames(T)
     p = getfield(parameter_set, param_name)
@@ -108,9 +107,8 @@ end
 """Updates the numerical values of a parameter set by the values given in a vector of values."""
 function update_num!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
   len = length_num(parameter_set)
-  len == length(new_values) || error(
-    "Error: 'new_values' should have length $(len), but has length $(length(new_values)).",
-  )
+  len == length(new_values) ||
+    error("Error: 'new_values' should have length $(len), but has length $(length(new_values)).")
   i = 0
   for param_name in fieldnames(T)
     p = getfield(parameter_set, param_name)
@@ -148,7 +146,7 @@ function upper_bounds(parameter_set::T) where {T <: AbstractParameterSet}
   return upper_bounds!(parameter_set, upper_bounds)
 end
 
-"""Returns upper bounds of each parameter in a parameter set in place.""" 
+"""Returns upper bounds of each parameter in a parameter set in place."""
 function upper_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
   length(parameter_set) == length(vals) || error(
     "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
