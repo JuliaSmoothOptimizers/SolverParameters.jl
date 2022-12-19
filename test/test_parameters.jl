@@ -125,4 +125,14 @@ end
   @test values_num!(param_set, b) == Float32[42.5, 6.0]
   b = zeros(Int32, 2)
   @test_throws InexactError values_num!(param_set, b) # because it cannot convert 42.5 as integer
+
+  @test lower_bounds(param_set) == [-Inf, 5] # the eltype is Any
+  b = zeros(2)
+  @test lower_bounds!(param_set, b) == [-Inf, 5]
+  @test eltype(b) == Float64
+
+  @test upper_bounds(param_set) == [Inf, 20] # the eltype is Any
+  b = zeros(2)
+  @test upper_bounds!(param_set, b) == [Inf, 20]
+  @test eltype(b) == Float64
 end
