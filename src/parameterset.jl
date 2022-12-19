@@ -1,5 +1,6 @@
 export AbstractParameterSet
-export value, domain, name, names!, set_value!, update!, lower_bounds, upper_bounds, set_names!
+export value, domain, name, names!, set_value!, update!, set_names!
+export lower_bounds, upper_bounds, lower_bounds!, upper_bounds!
 export length_num, values_num!, update_num!
 
 """ `AbstractParameterSet`
@@ -120,40 +121,48 @@ function update_num!(parameter_set::T, new_values::AbstractVector) where {T <: A
   return new_values
 end
 
-"""Returns lower bounds of each parameter in a parameter set."""
+"""Returns lower bounds of each numerical parameter in a parameter set."""
 function lower_bounds(parameter_set::T) where {T <: AbstractParameterSet}
-  lower_bounds = Vector{Any}(undef, length(parameter_set))
+  lower_bounds = Vector{Any}(undef, length_num(parameter_set))
   return lower_bounds!(parameter_set, lower_bounds)
 end
 
-"""Returns lower bounds of each parameter in a parameter set in place."""
+"""Returns lower bounds of each numerical parameter in a parameter set in place."""
 function lower_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
-  length(parameter_set) == length(vals) || error(
-    "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
+  length_num(parameter_set) == length(vals) || error(
+    "Error: 'vals' should have length $(length_num(parameter_set)), but has length $(length(vals)).",
   )
-  for (i, param_name) in enumerate(fieldnames(T))
+  i = 0
+  for param_name in fieldnames(T)
     p = getfield(parameter_set, param_name)
-    d = domain(p)
-    vals[i] = lower(d)
+    if !(typeof(p.domain) <: CategoricalDomain)
+        i += 1
+        d = domain(p)
+        vals[i] = lower(d)
+    end
   end
   return vals
 end
 
-"""Function that returns upper bounds of each parameter in a parameter set."""
+"""Function that returns upper bounds of each numerical parameter in a parameter set."""
 function upper_bounds(parameter_set::T) where {T <: AbstractParameterSet}
-  upper_bounds = Vector{Any}(undef, length(parameter_set))
+  upper_bounds = Vector{Any}(undef, length_num(parameter_set))
   return upper_bounds!(parameter_set, upper_bounds)
 end
 
-"""Returns upper bounds of each parameter in a parameter set in place."""
+"""Returns upper bounds of each numerical parameter in a parameter set in place."""
 function upper_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
-  length(parameter_set) == length(vals) || error(
-    "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
+  length_num(parameter_set) == length(vals) || error(
+    "Error: 'vals' should have length $(length_num(parameter_set)), but has length $(length(vals)).",
   )
-  for (i, param_name) in enumerate(fieldnames(T))
+  i = 0
+  for param_name in fieldnames(T)
     p = getfield(parameter_set, param_name)
-    d = domain(p)
-    vals[i] = upper(d)
+    if !(typeof(p.domain) <: CategoricalDomain)
+        i += 1
+        d = domain(p)
+        vals[i] = upper(d)
+    end
   end
   return vals
 end
