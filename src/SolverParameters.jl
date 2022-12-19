@@ -8,4 +8,6 @@ import Base.convert
 
 include("domains.jl")
 include("parameters.jl")
+include("parameterset.jl")
+
 end
