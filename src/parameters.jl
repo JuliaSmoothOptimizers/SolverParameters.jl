@@ -55,12 +55,19 @@ Ex:
   1.0
 ```
 """
-function convert(::Parameter{T}, value::P) where {T, P <: AbstractFloat}
-  if T <: Union{Integer}
-    return round(T, value)
-  end
+function convert(::Parameter{T}, value) where {T <: AbstractFloat}
   return convert(T, value)
 end
+
+function convert(::Parameter{T}, value) where {T <: Integer}
+  return round(T, value)
+end
+
+function convert(::Parameter, value) # Symbol, String, Function ...
+  return value
+end
+
+∈(a, p::Parameter) = ∈(a, domain(p))
 
 function check_value(domain::AbstractDomain{T}, new_value::T) where {T}
   new_value ∈ domain || throw(DomainError("value $(new_value) should be in domain"))

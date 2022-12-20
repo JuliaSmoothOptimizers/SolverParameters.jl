@@ -31,6 +31,15 @@ function length_num(parameter_set::T) where {T <: AbstractParameterSet}
   return k
 end
 
+function ∈(x::AbstractVector, parameter_set::T) where {T <: AbstractParameterSet}
+  for (i, param_name) in enumerate(fieldnames(T))
+    p = getfield(parameter_set, param_name)
+    converted_value = convert(p, x[i])
+    ∈(converted_value, p) || return false
+  end
+  return true
+end
+
 """Returns the name of the parameters in a parameter set."""
 function names(parameter_set::T) where {T <: AbstractParameterSet}
   n = Vector{String}(undef, length(parameter_set))
