@@ -86,7 +86,7 @@ end
     @test a == 0
   end
   @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5])
-  update!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1]))
+  set_values!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1]))
   @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 20, 1])
 end
 
@@ -118,7 +118,7 @@ end
   b = zeros(Int32, 2)
   @test values_num!(param_set, b) == Int32[42.0, 5.0]
 
-  update_num!(param_set, [42.5, 5.6])
+  set_values_num!(param_set, [42.5, 5.6])
   @test values(param_set) == [42.5, "A", 6]
 
   b = zeros(Float32, 2)

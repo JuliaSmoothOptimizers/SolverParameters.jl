@@ -1,7 +1,7 @@
 export AbstractParameterSet
-export value, domain, name, names!, set_value!, update!, set_names!
+export value, domain, name, names!, set_value!, set_values!, set_names!
 export lower_bounds, upper_bounds, lower_bounds!, upper_bounds!
-export length_num, values_num!, update_num!
+export length_num, values_num!, set_values_num!
 
 """ `AbstractParameterSet`
 An abstract type that represents a set of multiple parameters.
@@ -102,7 +102,7 @@ function values_num!(parameter_set::T, vals::AbstractVector{S}) where {T <: Abst
 end
 
 """Updates the values of a parameter set by the values given in a vector of values."""
-function update!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
+function set_values!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
   length(parameter_set) == length(new_values) || error(
     "Error: 'new_values' should have length $(length(parameter_set)), but has length $(length(new_values)).",
   )
@@ -114,7 +114,7 @@ function update!(parameter_set::T, new_values::AbstractVector) where {T <: Abstr
 end
 
 """Updates the numerical values of a parameter set by the values given in a vector of values."""
-function update_num!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
+function set_values_num!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
   len = length_num(parameter_set)
   len == length(new_values) ||
     error("Error: 'new_values' should have length $(len), but has length $(length(new_values)).")
