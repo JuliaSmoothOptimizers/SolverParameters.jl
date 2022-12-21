@@ -1,14 +1,32 @@
 export Parameter, AbstractParameter, value, domain, name, check_value, set_value!
 
-"""`AbstractParameter`
+"""
+    AbstractParameter{T}
 
-An Abstract type that superseeds the other parameter types.
+An Abstract type for parameters of value type `T`.
 """
 abstract type AbstractParameter{T} end
 
-"""`Parameter`
+"""
+    Parameter{T, AbstractDomain{T}} <: AbstractParameter{T}
 
-Child type of `AbstractParameter` that exposes a specific parameter.
+    Parameter(value::T; name::String = "")
+    Parameter(value::T, domain::AbstractDomain{T}; name::String = "")
+    Parameter(value::T, domain::AbstractDomain{T}, name::String)
+
+A `Parameter` structure handles the following attributes describing one parameter:
+  - `value::T`: default value of the parameter;
+  - `domain::AbstractDomain{T}`: domain of the possible values of the parameter;
+  - `name::String`: name of the parameter.
+
+If no domain is specified, the constructor uses (-`typemin(x)`, `typemax(x)`) as domain.
+
+Examples:
+```julia
+  Parameter(Float64(42))
+  Parameter("A", CategoricalSet(["A", "B", "C", "D"]))
+  Parameter(Int32(5), IntegerRange(Int32(5), Int32(20)))
+```
 """
 mutable struct Parameter{T, D <: AbstractDomain{T}} <: AbstractParameter{T}
   value::T
@@ -20,19 +38,16 @@ mutable struct Parameter{T, D <: AbstractDomain{T}} <: AbstractParameter{T}
   end
 end
 
-"""Constructor of a continuous parameter x ∈ R bounded by (-∞, ∞)."""
 function Parameter(value::T; name::String = "") where {T <: AbstractFloat}
   domain = RealInterval(T(-Inf), T(Inf); lower_open = true, upper_open = true)
   Parameter(value, domain, name)
 end
 
-"""Constructor of a discrete parameter x ∈ Z bounded by (-`typemin(x)`, `typemax(x)`)."""
 function Parameter(value::T; name::String = "") where {T <: Integer}
   domain = IntegerRange(typemin(T), typemax(T))
   Parameter(value, domain, name)
 end
 
-"""Constructor of an arbitrary parameter whose default name is an empty string."""
 function Parameter(value::T, domain::AbstractDomain{T}; name::String = "") where {T}
   Parameter(value, domain, name)
 end
@@ -46,13 +61,25 @@ domain(parameter::Parameter{T}) where {T} = parameter.domain
 """Returns the name of a parameter."""
 name(parameter::Parameter{T}) where {T} = parameter.name
 
-"""Converts a Float to the corresponding type of a giver parameter.
-Ex:
+"""
+    convert(::Parameter{T}, value)
+
+Converts a `value` to the corresponding type of a giver parameter.
+If `T` is integer, this function will first round the `value`.
+
+Examples:
 ```julia
   real_param = Parameter(1.5, RealInterval(0.0, 2.0), "real_param")
   a = 1
   convert(real_param, a)
   1.0
+```
+
+```julia
+  int_param = Parameter(1, IntegerRange(1, 4), "int_param")
+  a = 1.6
+  convert(int_param, a)
+  2
 ```
 """
 function convert(::Parameter{T}, value) where {T <: AbstractFloat}
@@ -69,11 +96,21 @@ end
 
 ∈(a, p::Parameter) = ∈(a, domain(p))
 
+"""
+    check_value(domain::AbstractDomain{T}, new_value::T)
+
+Throw a `DomainError` if `new_value` is not in the `domain`.
+"""
 function check_value(domain::AbstractDomain{T}, new_value::T) where {T}
   new_value ∈ domain || throw(DomainError("value $(new_value) should be in domain"))
 end
 
-"""Set value of a parameter."""
+"""
+    set_value!(parameter::Parameter{T}, new_value::T)
+
+Set value of a parameter.
+It throws a `DomainError` if `new_value` is not in the `domain` of the `parameter`.
+"""
 function set_value!(parameter::Parameter{T}, new_value::T) where {T}
   check_value(domain(parameter), new_value)
   parameter.value = new_value
