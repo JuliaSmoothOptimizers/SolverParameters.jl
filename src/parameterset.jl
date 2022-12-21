@@ -136,9 +136,9 @@ function lower_bounds!(parameter_set::T, vals::AbstractVector) where {T <: Abstr
   for param_name in fieldnames(T)
     p = getfield(parameter_set, param_name)
     if !(typeof(p.domain) <: CategoricalDomain)
-        i += 1
-        d = domain(p)
-        vals[i] = lower(d)
+      i += 1
+      d = domain(p)
+      vals[i] = lower(d)
     end
   end
   return vals
@@ -159,9 +159,9 @@ function upper_bounds!(parameter_set::T, vals::AbstractVector) where {T <: Abstr
   for param_name in fieldnames(T)
     p = getfield(parameter_set, param_name)
     if !(typeof(p.domain) <: CategoricalDomain)
-        i += 1
-        d = domain(p)
-        vals[i] = upper(d)
+      i += 1
+      d = domain(p)
+      vals[i] = upper(d)
     end
   end
   return vals
