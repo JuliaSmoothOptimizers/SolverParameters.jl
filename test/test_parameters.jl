@@ -126,6 +126,11 @@ end
   b = zeros(Int32, 2)
   @test_throws InexactError values_num!(param_set, b) # because it cannot convert 42.5 as integer
 
+
+  @test [42.0, "A", 5] in param_set
+  @test [42.0, "A", 5.2] in param_set
+  @test !([42.0, "E", 5] in param_set)
+
   @test lower_bounds(param_set) == [-Inf, 5] # the eltype is Any
   b = zeros(2)
   @test lower_bounds!(param_set, b) == [-Inf, 5]
