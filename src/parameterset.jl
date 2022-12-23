@@ -116,7 +116,10 @@ function set_values!(parameter_set::T, new_values::AbstractVector) where {T <: A
 end
 
 """Updates the numerical values of a parameter set by the values given in a vector of values."""
-function set_values_num!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
+function set_values_num!(
+  parameter_set::T,
+  new_values::AbstractVector,
+) where {T <: AbstractParameterSet}
   len = length_num(parameter_set)
   len == length(new_values) ||
     error("Error: 'new_values' should have length $(len), but has length $(length(new_values)).")
