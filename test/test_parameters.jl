@@ -3,6 +3,7 @@ struct MockSolverParamSet{I, F} <: AbstractParameterSet
   real::Parameter{F, RealInterval{F}}
   int_r::Parameter{I, IntegerRange{I}}
   int_s::Parameter{I, IntegerSet{I}}
+  boolean::Parameter{Bool, BinaryRange{Bool}}
 end
 
 function MockSolverParamSet(I::DataType, F::DataType)
@@ -11,6 +12,7 @@ function MockSolverParamSet(I::DataType, F::DataType)
     Parameter(F(1.5e-10), RealInterval(F(0.0), F(1.0))),
     Parameter(I(5), IntegerRange(I(5), I(20))),
     Parameter(I(5), IntegerSet(I[2, 4, 5, 1, 3, 7])),
+    Parameter(true, BinaryRange())
   )
 end
 
@@ -24,9 +26,9 @@ end
                                                                fieldnames(typeof(param_set))
     @test name(getfield(param_set, f_name)) == string(f_name)
   end
-  @test lower_bounds(param_set) == [-Inf, 0.0, 5, 1]
-  @test upper_bounds(param_set) == [Inf, 1.0, 20, 7]
-  @test values(param_set) == [F(42), F(1.5e-10), I(5), I(5)]
+  @test lower_bounds(param_set) == [-Inf, 0.0, 5, 1, false]
+  @test upper_bounds(param_set) == [Inf, 1.0, 20, 7, true]
+  @test values(param_set) == [F(42), F(1.5e-10), I(5), I(5), true]
   @testset "Real Parameter" verbose = true begin
     params = [param_set.real_inf, param_set.real]
     @testset "testing param $(p.name)" for p in params
@@ -59,6 +61,14 @@ end
       @test (param_domain isa IntegerSet{I}) == true
     end
   end
+  @testset "BinaryRange" begin
+    param = param_set.boolean
+    @testset "Testing getters" begin
+      @test value(param) == true
+      param_domain = domain(param)
+      @test (param_domain isa BinaryRange{Bool}) == true
+    end
+  end
 end
 
 @testset "Categorical parameters" verbose = true begin
@@ -79,15 +89,15 @@ end
   param_set = MockSolverParamSet(I, F)
   set_names!(param_set)
 
-  @test names(param_set) == Vector{String}(["real_inf", "real", "int_r", "int_s"])
-  @test length(param_set) == 4
+  @test names(param_set) == Vector{String}(["real_inf", "real", "int_r", "int_s", "boolean"])
+  @test length(param_set) == 5
   if check_allocations
     a = @allocated length(param_set)
     @test a == 0
   end
-  @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5])
-  set_values!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1]))
-  @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 20, 1])
+  @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5, true])
+  set_values!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1, false]))
+  @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 20, 1, false])
 end
 
 struct CatMockSolverParamSet{I, F} <: AbstractParameterSet
