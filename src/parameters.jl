@@ -90,6 +90,10 @@ function convert(::Parameter{T}, value) where {T <: Integer}
   return round(T, value)
 end
 
+function convert(::Parameter{Bool}, value)
+  return round(Int, value) != 0
+end
+
 function convert(::Parameter, value) # Symbol, String, Function ...
   return value
 end
