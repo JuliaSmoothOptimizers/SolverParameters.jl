@@ -12,7 +12,7 @@ function MockSolverParamSet(I::DataType, F::DataType)
     Parameter(F(1.5e-10), RealInterval(F(0.0), F(1.0))),
     Parameter(I(5), IntegerRange(I(5), I(20))),
     Parameter(I(5), IntegerSet(I[2, 4, 5, 1, 3, 7])),
-    Parameter(true, BinaryRange())
+    Parameter(true, BinaryRange()),
   )
 end
 
