@@ -104,11 +104,12 @@ end
 
 """Returns current values of each numerical parameter in a parameter set in place."""
 function values_num!(parameter_set::T, vals::AbstractVector{S}) where {T <: AbstractParameterSet, S}
-  len = length_num(parameter_set)
-  len == length(vals) ||
-    error("Error: 'vals' should have length $(len), but has length $(length(vals)).")
+  return values_num!(fieldnames(T), parameter_set, vals)
+end
+
+function values_num!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector{S}) where {T <: AbstractParameterSet, S, N}
   i = 0
-  for param_name in fieldnames(T)
+  for param_name in subset
     p = getfield(parameter_set, param_name)
     if !(typeof(p.domain) <: CategoricalDomain)
       i += 1
@@ -139,11 +140,16 @@ function set_values_num!(
   parameter_set::T,
   new_values::AbstractVector,
 ) where {T <: AbstractParameterSet}
-  len = length_num(parameter_set)
-  len == length(new_values) ||
-    error("Error: 'new_values' should have length $(len), but has length $(length(new_values)).")
+  return set_values_num!(fieldnames(T), parameter_set, new_values)
+end
+
+function set_values_num!(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+  new_values::AbstractVector,
+) where {T <: AbstractParameterSet, N}
   i = 0
-  for param_name in fieldnames(T)
+  for param_name in subset
     p = getfield(parameter_set, param_name)
     if !(typeof(p.domain) <: CategoricalDomain)
       i += 1
