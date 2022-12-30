@@ -75,12 +75,21 @@ function values(parameter_set::T) where {T <: AbstractParameterSet}
   return values!(parameter_set, vals)
 end
 
+function values(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
+  vals = Vector{Any}(undef, length(subset))
+  return values!(subset, parameter_set, vals)
+end
+
 """Returns current values of each parameter in a parameter set in place."""
 function values!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
-  length(parameter_set) == length(vals) || error(
-    "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
+  return values!(fieldnames(T), parameter_set, vals)
+end
+
+function values!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet, N}
+  length(subset) == length(vals) || error(
+    "Error: 'vals' should have length $(length(subset)), but has length $(length(vals)).",
   )
-  for (i, param_name) in enumerate(fieldnames(T))
+  for (i, param_name) in enumerate(subset)
     p = getfield(parameter_set, param_name)
     vals[i] = value(p)
   end
@@ -111,10 +120,14 @@ end
 
 """Updates the values of a parameter set by the values given in a vector of values."""
 function set_values!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
+  return set_values!(fieldnames(T), parameter_set, new_values)
+end
+
+function set_values!(subset::NTuple{N, Symbol}, parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet, N}
   length(parameter_set) == length(new_values) || error(
     "Error: 'new_values' should have length $(length(parameter_set)), but has length $(length(new_values)).",
   )
-  for (i, param_name) in enumerate(fieldnames(T))
+  for (i, param_name) in enumerate(subset)
     p = getfield(parameter_set, param_name)
     converted_value = convert(p, new_values[i])
     set_value!(p, converted_value)
@@ -147,13 +160,22 @@ function lower_bounds(parameter_set::T) where {T <: AbstractParameterSet}
   return lower_bounds!(parameter_set, lower_bounds)
 end
 
+function lower_bounds(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
+  lower_bounds = Vector{Any}(undef, length_num(subset))
+  return lower_bounds!(subset, parameter_set, lower_bounds)
+end
+
 """Returns lower bounds of each numerical parameter in a parameter set in place."""
 function lower_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
+  return lower_bounds!(fieldnames(T), parameter_set, vals)
+end
+
+function lower_bounds!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet, N}
   length_num(parameter_set) == length(vals) || error(
     "Error: 'vals' should have length $(length_num(parameter_set)), but has length $(length(vals)).",
   )
   i = 0
-  for param_name in fieldnames(T)
+  for param_name in subset
     p = getfield(parameter_set, param_name)
     if !(typeof(p.domain) <: CategoricalDomain)
       i += 1
@@ -170,13 +192,22 @@ function upper_bounds(parameter_set::T) where {T <: AbstractParameterSet}
   return upper_bounds!(parameter_set, upper_bounds)
 end
 
+function upper_bounds(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
+  upper_bounds = Vector{Any}(undef, length_num(subset))
+  return upper_bounds!(subset, parameter_set, upper_bounds)
+end
+
 """Returns upper bounds of each numerical parameter in a parameter set in place."""
 function upper_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
+  return upper_bounds!(fieldnames(T), parameter_set, vals)
+end
+
+function upper_bounds!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet, N}
   length_num(parameter_set) == length(vals) || error(
     "Error: 'vals' should have length $(length_num(parameter_set)), but has length $(length(vals)).",
   )
   i = 0
-  for param_name in fieldnames(T)
+  for param_name in subset
     p = getfield(parameter_set, param_name)
     if !(typeof(p.domain) <: CategoricalDomain)
       i += 1
