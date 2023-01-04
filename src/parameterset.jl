@@ -1,4 +1,4 @@
-export AbstractParameterSet
+export AbstractParameterSet, fieldnames_num
 export value, domain, name, names!, set_value!, set_values!, set_names!
 export lower_bounds, upper_bounds, lower_bounds!, upper_bounds!
 export length_num, values_num, values_num!, set_values_num!
@@ -43,6 +43,17 @@ function ∈(x::AbstractVector, parameter_set::T) where {T <: AbstractParameterS
   return true
 end
 
+function fieldnames_num(parameter_set::T) where {T <: AbstractParameterSet}
+  nn = collect(fieldnames(T))
+  for (i, param_name) in enumerate(nn)
+    p = getfield(parameter_set, param_name)
+    if typeof(p.domain) <: CategoricalDomain
+      deleteat!(nn, i)
+    end
+  end
+  return Tuple(nn)
+end
+
 """Returns the name of the parameters in a parameter set."""
 function names(parameter_set::T) where {T <: AbstractParameterSet}
   n = Vector{String}(undef, length(parameter_set))
@@ -76,7 +87,7 @@ function values(parameter_set::T) where {T <: AbstractParameterSet}
 end
 
 function values(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
-  vals = Vector{Any}(undef, length(subset))
+  vals = Vector{Any}(undef, N)
   return values!(subset, parameter_set, vals)
 end
 
@@ -90,8 +101,8 @@ function values!(
   parameter_set::T,
   vals::AbstractVector,
 ) where {T <: AbstractParameterSet, N}
-  length(subset) == length(vals) ||
-    error("Error: 'vals' should have length $(length(subset)), but has length $(length(vals)).")
+  N == length(vals) ||
+    error("Error: 'vals' should have length $(N), but has length $(length(vals)).")
   for (i, param_name) in enumerate(subset)
     p = getfield(parameter_set, param_name)
     vals[i] = value(p)
@@ -105,9 +116,14 @@ function values_num(parameter_set::T) where {T <: AbstractParameterSet}
   return values_num!(parameter_set, vals)
 end
 
+function values_num(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
+  vals = Vector{Float64}(undef, N)
+  return values_num!(subset, parameter_set, vals)
+end
+
 """Returns current values of each numerical parameter in a parameter set in place."""
 function values_num!(parameter_set::T, vals::AbstractVector{S}) where {T <: AbstractParameterSet, S}
-  return values_num!(fieldnames(T), parameter_set, vals)
+  return values_num!(fieldnames_num(parameter_set), parameter_set, vals)
 end
 
 function values_num!(
@@ -136,8 +152,8 @@ function set_values!(
   parameter_set::T,
   new_values::AbstractVector,
 ) where {T <: AbstractParameterSet, N}
-  length(parameter_set) == length(new_values) || error(
-    "Error: 'new_values' should have length $(length(parameter_set)), but has length $(length(new_values)).",
+  N == length(new_values) || error(
+    "Error: 'new_values' should have length $(N), but has length $(length(new_values)).",
   )
   for (i, param_name) in enumerate(subset)
     p = getfield(parameter_set, param_name)
@@ -151,7 +167,7 @@ function set_values_num!(
   parameter_set::T,
   new_values::AbstractVector,
 ) where {T <: AbstractParameterSet}
-  return set_values_num!(fieldnames(T), parameter_set, new_values)
+  return set_values_num!(fieldnames_num(parameter_set), parameter_set, new_values)
 end
 
 function set_values_num!(
@@ -181,13 +197,13 @@ function lower_bounds(
   subset::NTuple{N, Symbol},
   parameter_set::T,
 ) where {T <: AbstractParameterSet, N}
-  lower_bounds = Vector{Any}(undef, length_num(subset))
+  lower_bounds = Vector{Any}(undef, N)
   return lower_bounds!(subset, parameter_set, lower_bounds)
 end
 
 """Returns lower bounds of each numerical parameter in a parameter set in place."""
 function lower_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
-  return lower_bounds!(fieldnames(T), parameter_set, vals)
+  return lower_bounds!(fieldnames_num(parameter_set), parameter_set, vals)
 end
 
 function lower_bounds!(
@@ -195,8 +211,8 @@ function lower_bounds!(
   parameter_set::T,
   vals::AbstractVector,
 ) where {T <: AbstractParameterSet, N}
-  length_num(parameter_set) == length(vals) || error(
-    "Error: 'vals' should have length $(length_num(parameter_set)), but has length $(length(vals)).",
+  N == length(vals) || error(
+    "Error: 'vals' should have length $(N), but has length $(length(vals)).",
   )
   i = 0
   for param_name in subset
@@ -220,13 +236,13 @@ function upper_bounds(
   subset::NTuple{N, Symbol},
   parameter_set::T,
 ) where {T <: AbstractParameterSet, N}
-  upper_bounds = Vector{Any}(undef, length_num(subset))
+  upper_bounds = Vector{Any}(undef, N)
   return upper_bounds!(subset, parameter_set, upper_bounds)
 end
 
 """Returns upper bounds of each numerical parameter in a parameter set in place."""
 function upper_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
-  return upper_bounds!(fieldnames(T), parameter_set, vals)
+  return upper_bounds!(fieldnames_num(parameter_set), parameter_set, vals)
 end
 
 function upper_bounds!(
@@ -234,8 +250,8 @@ function upper_bounds!(
   parameter_set::T,
   vals::AbstractVector,
 ) where {T <: AbstractParameterSet, N}
-  length_num(parameter_set) == length(vals) || error(
-    "Error: 'vals' should have length $(length_num(parameter_set)), but has length $(length(vals)).",
+  N == length(vals) || error(
+    "Error: 'vals' should have length $(N), but has length $(length(vals)).",
   )
   i = 0
   for param_name in subset
