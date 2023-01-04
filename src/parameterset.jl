@@ -1,7 +1,7 @@
 export AbstractParameterSet
 export value, domain, name, names!, set_value!, set_values!, set_names!
 export lower_bounds, upper_bounds, lower_bounds!, upper_bounds!
-export length_num, values_num!, set_values_num!
+export length_num, values_num, values_num!, set_values_num!
 
 """
     AbstractParameterSet
@@ -85,6 +85,12 @@ function values!(parameter_set::T, vals::AbstractVector) where {T <: AbstractPar
     vals[i] = value(p)
   end
   return vals
+end
+
+"""Returns current values of each numerical parameter in a parameter set."""
+function values_num(parameter_set::T) where {T <: AbstractParameterSet}
+  vals = Vector{Float64}(undef, length_num(parameter_set))
+  return values_num!(parameter_set, vals)
 end
 
 """Returns current values of each numerical parameter in a parameter set in place."""
