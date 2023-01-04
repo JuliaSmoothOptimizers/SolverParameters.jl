@@ -151,3 +151,37 @@ end
   @test upper_bounds!(param_set, b) == [Inf, 20]
   @test eltype(b) == Float64
 end
+
+@testset "Subset parameters in ParameterSet" begin
+  param_set = CatMockSolverParamSet()
+  subset = (:real_inf, )
+
+  @test length(subset) == 1
+
+  @test values(subset, param_set) == [42.0]
+  @test values_num(subset, param_set) == [42.0]
+  b = zeros(Float64, 1)
+  @test values_num!(subset, param_set, b) == [42.0]
+  b = zeros(Float32, 1)
+  @test values_num!(subset, param_set, b) == Float32[42.0]
+  b = zeros(Int32, 1)
+  @test values_num!(subset, param_set, b) == Int32[42.0]
+
+  set_values_num!(subset, param_set, [42.5])
+  @test values(subset, param_set) == [42.5]
+
+  b = zeros(Float32, 1)
+  @test values_num!(subset, param_set, b) == Float32[42.5]
+  b = zeros(Int32, 1)
+  @test_throws InexactError values_num!(subset, param_set, b) # because it cannot convert 42.5 as integer
+
+  @test lower_bounds(subset, param_set) == [-Inf] # the eltype is Any
+  b = zeros(1)
+  @test lower_bounds!(subset, param_set, b) == [-Inf]
+  @test eltype(b) == Float64
+
+  @test upper_bounds(subset, param_set) == [Inf] # the eltype is Any
+  b = zeros(1)
+  @test upper_bounds!(subset, param_set, b) == [Inf]
+  @test eltype(b) == Float64
+end
