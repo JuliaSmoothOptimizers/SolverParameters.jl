@@ -85,10 +85,13 @@ function values!(parameter_set::T, vals::AbstractVector) where {T <: AbstractPar
   return values!(fieldnames(T), parameter_set, vals)
 end
 
-function values!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet, N}
-  length(subset) == length(vals) || error(
-    "Error: 'vals' should have length $(length(subset)), but has length $(length(vals)).",
-  )
+function values!(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+  vals::AbstractVector,
+) where {T <: AbstractParameterSet, N}
+  length(subset) == length(vals) ||
+    error("Error: 'vals' should have length $(length(subset)), but has length $(length(vals)).")
   for (i, param_name) in enumerate(subset)
     p = getfield(parameter_set, param_name)
     vals[i] = value(p)
@@ -107,7 +110,11 @@ function values_num!(parameter_set::T, vals::AbstractVector{S}) where {T <: Abst
   return values_num!(fieldnames(T), parameter_set, vals)
 end
 
-function values_num!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector{S}) where {T <: AbstractParameterSet, S, N}
+function values_num!(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+  vals::AbstractVector{S},
+) where {T <: AbstractParameterSet, S, N}
   i = 0
   for param_name in subset
     p = getfield(parameter_set, param_name)
@@ -124,7 +131,11 @@ function set_values!(parameter_set::T, new_values::AbstractVector) where {T <: A
   return set_values!(fieldnames(T), parameter_set, new_values)
 end
 
-function set_values!(subset::NTuple{N, Symbol}, parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet, N}
+function set_values!(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+  new_values::AbstractVector,
+) where {T <: AbstractParameterSet, N}
   length(parameter_set) == length(new_values) || error(
     "Error: 'new_values' should have length $(length(parameter_set)), but has length $(length(new_values)).",
   )
@@ -166,7 +177,10 @@ function lower_bounds(parameter_set::T) where {T <: AbstractParameterSet}
   return lower_bounds!(parameter_set, lower_bounds)
 end
 
-function lower_bounds(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
+function lower_bounds(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+) where {T <: AbstractParameterSet, N}
   lower_bounds = Vector{Any}(undef, length_num(subset))
   return lower_bounds!(subset, parameter_set, lower_bounds)
 end
@@ -176,7 +190,11 @@ function lower_bounds!(parameter_set::T, vals::AbstractVector) where {T <: Abstr
   return lower_bounds!(fieldnames(T), parameter_set, vals)
 end
 
-function lower_bounds!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet, N}
+function lower_bounds!(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+  vals::AbstractVector,
+) where {T <: AbstractParameterSet, N}
   length_num(parameter_set) == length(vals) || error(
     "Error: 'vals' should have length $(length_num(parameter_set)), but has length $(length(vals)).",
   )
@@ -198,7 +216,10 @@ function upper_bounds(parameter_set::T) where {T <: AbstractParameterSet}
   return upper_bounds!(parameter_set, upper_bounds)
 end
 
-function upper_bounds(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
+function upper_bounds(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+) where {T <: AbstractParameterSet, N}
   upper_bounds = Vector{Any}(undef, length_num(subset))
   return upper_bounds!(subset, parameter_set, upper_bounds)
 end
@@ -208,7 +229,11 @@ function upper_bounds!(parameter_set::T, vals::AbstractVector) where {T <: Abstr
   return upper_bounds!(fieldnames(T), parameter_set, vals)
 end
 
-function upper_bounds!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet, N}
+function upper_bounds!(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+  vals::AbstractVector,
+) where {T <: AbstractParameterSet, N}
   length_num(parameter_set) == length(vals) || error(
     "Error: 'vals' should have length $(length_num(parameter_set)), but has length $(length(vals)).",
   )
