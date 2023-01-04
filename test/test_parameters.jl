@@ -121,6 +121,7 @@ end
   @test length(param_set) == 3
 
   @test values(param_set) == [42.0, "A", 5]
+  @test values_num(param_set) == [42.0, 5]
   b = zeros(Float64, 2)
   @test values_num!(param_set, b) == [42.0, 5.0]
   b = zeros(Float32, 2)
