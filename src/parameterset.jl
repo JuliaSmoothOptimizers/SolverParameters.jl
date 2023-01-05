@@ -117,8 +117,9 @@ function values_num(parameter_set::T) where {T <: AbstractParameterSet}
 end
 
 function values_num(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
-  vals = Vector{Float64}(undef, N)
-  return values_num!(subset, parameter_set, vals)
+  fields = intersect(subset, fieldnames_num(parameter_set))
+  vals = Vector{Float64}(undef, length(fields))
+  return values_num!(Tuple(fields), parameter_set, vals)
 end
 
 """Returns current values of each numerical parameter in a parameter set in place."""
@@ -197,8 +198,9 @@ function lower_bounds(
   subset::NTuple{N, Symbol},
   parameter_set::T,
 ) where {T <: AbstractParameterSet, N}
-  lower_bounds = Vector{Any}(undef, N)
-  return lower_bounds!(subset, parameter_set, lower_bounds)
+  fields = intersect(subset, fieldnames_num(parameter_set))
+  lower_bounds = Vector{Any}(undef, length(fields))
+  return lower_bounds!(Tuple(fields), parameter_set, lower_bounds)
 end
 
 """Returns lower bounds of each numerical parameter in a parameter set in place."""
@@ -211,9 +213,6 @@ function lower_bounds!(
   parameter_set::T,
   vals::AbstractVector,
 ) where {T <: AbstractParameterSet, N}
-  N == length(vals) || error(
-    "Error: 'vals' should have length $(N), but has length $(length(vals)).",
-  )
   i = 0
   for param_name in subset
     p = getfield(parameter_set, param_name)
@@ -236,8 +235,9 @@ function upper_bounds(
   subset::NTuple{N, Symbol},
   parameter_set::T,
 ) where {T <: AbstractParameterSet, N}
-  upper_bounds = Vector{Any}(undef, N)
-  return upper_bounds!(subset, parameter_set, upper_bounds)
+  fields = intersect(subset, fieldnames_num(parameter_set))
+  upper_bounds = Vector{Any}(undef, length(fields))
+  return upper_bounds!(Tuple(subset), parameter_set, upper_bounds)
 end
 
 """Returns upper bounds of each numerical parameter in a parameter set in place."""
@@ -250,9 +250,6 @@ function upper_bounds!(
   parameter_set::T,
   vals::AbstractVector,
 ) where {T <: AbstractParameterSet, N}
-  N == length(vals) || error(
-    "Error: 'vals' should have length $(N), but has length $(length(vals)).",
-  )
   i = 0
   for param_name in subset
     p = getfield(parameter_set, param_name)
