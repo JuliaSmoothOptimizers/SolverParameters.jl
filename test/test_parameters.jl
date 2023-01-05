@@ -154,11 +154,11 @@ end
 
 @testset "Subset parameters in ParameterSet" begin
   param_set = CatMockSolverParamSet()
-  subset = (:real_inf, )
+  subset = (:real_inf, :real)
 
-  @test length(subset) == 1
+  @test length(subset) == 2
 
-  @test values(subset, param_set) == [42.0]
+  @test values(subset, param_set) == [42.0, "A"]
   @test values_num(subset, param_set) == [42.0]
   b = zeros(Float64, 1)
   @test values_num!(subset, param_set, b) == [42.0]
@@ -168,7 +168,7 @@ end
   @test values_num!(subset, param_set, b) == Int32[42.0]
 
   set_values_num!(subset, param_set, [42.5])
-  @test values(subset, param_set) == [42.5]
+  @test values(subset, param_set) == [42.5, "A"]
 
   b = zeros(Float32, 1)
   @test values_num!(subset, param_set, b) == Float32[42.5]
