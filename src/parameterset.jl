@@ -116,7 +116,10 @@ function values_num(parameter_set::T) where {T <: AbstractParameterSet}
   return values_num!(parameter_set, vals)
 end
 
-function values_num(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: AbstractParameterSet, N}
+function values_num(
+  subset::NTuple{N, Symbol},
+  parameter_set::T,
+) where {T <: AbstractParameterSet, N}
   fields = intersect(subset, fieldnames_num(parameter_set))
   vals = Vector{Float64}(undef, length(fields))
   return values_num!(Tuple(fields), parameter_set, vals)
@@ -153,9 +156,8 @@ function set_values!(
   parameter_set::T,
   new_values::AbstractVector,
 ) where {T <: AbstractParameterSet, N}
-  N == length(new_values) || error(
-    "Error: 'new_values' should have length $(N), but has length $(length(new_values)).",
-  )
+  N == length(new_values) ||
+    error("Error: 'new_values' should have length $(N), but has length $(length(new_values)).")
   for (i, param_name) in enumerate(subset)
     p = getfield(parameter_set, param_name)
     converted_value = convert(p, new_values[i])
