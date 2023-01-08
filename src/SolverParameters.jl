@@ -1,6 +1,7 @@
 module SolverParameters
 
 using Random
+import Base.rand
 
 import Base.∈
 import Base.length
