@@ -26,6 +26,7 @@ end
   @test (:canada ∈ d) == false
   @test_throws DomainError lower(d)
   @test_throws DomainError upper(d)
+  @test rand(d) ∈ d
 end
 
 @testset "Testing Real domains" verbose = true begin
@@ -49,6 +50,10 @@ end
       @testset "constructor" verbose = true begin
         @test_throws ErrorException RealInterval(max, min)
       end
+      @test rand(d_closed) ∈ d_closed
+      @test rand(d_lopen) ∈ d_lopen
+      @test rand(d_ropen) ∈ d_ropen
+      @test rand(d_open) ∈ d_open
     end
   end
   @testset "IntegerRange $T" verbose = true for T in (Int32, Int64)
@@ -62,11 +67,13 @@ end
     @testset "constructor" verbose = true begin
       @test_throws ErrorException IntegerRange(max, min)
     end
+    @test rand(d) ∈ d
   end
   @testset "Binary range" begin
     b = BinaryRange()
     @test lower(b) == false
     @test upper(b) == true
+    @test rand(b) ∈ b
   end
   @testset "IntegerSet" verbose = true begin
     d = IntegerSet([2, 4, 5, 1, 3, 7])
@@ -74,5 +81,6 @@ end
     @test upper(d) == 7
     @test (4 ∈ d) == true
     @test (6 ∈ d) == false
+    @test rand(d) ∈ d
   end
 end
