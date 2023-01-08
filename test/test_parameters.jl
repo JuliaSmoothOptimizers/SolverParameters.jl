@@ -29,6 +29,8 @@ end
   @test lower_bounds(param_set) == [-Inf, 0.0, 5, 1, false]
   @test upper_bounds(param_set) == [Inf, 1.0, 20, 7, true]
   @test values(param_set) == [F(42), F(1.5e-10), I(5), I(5), true]
+  @show rand(param_set)
+  @test rand(param_set) ∈ param_set
   @testset "Real Parameter" verbose = true begin
     params = [param_set.real_inf, param_set.real]
     @testset "testing param $(p.name)" for p in params
@@ -98,6 +100,7 @@ end
   @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5, true])
   set_values!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1, false]))
   @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 20, 1, false])
+  @test rand(param_set) ∈ param_set
 end
 
 struct CatMockSolverParamSet{I, F} <: AbstractParameterSet
@@ -116,6 +119,8 @@ end
 
 @testset "Numerical/Categorical parameters in ParameterSet" begin
   param_set = CatMockSolverParamSet()
+
+  @test rand(param_set) ∈ param_set
 
   @test length_num(param_set) == 2
   @test length(param_set) == 3
@@ -155,6 +160,10 @@ end
 @testset "Subset parameters in ParameterSet" begin
   param_set = CatMockSolverParamSet()
   subset = (:real_inf, :real)
+
+  r = rand(subset, param_set)
+  @test r[1] ∈ param_set.real_inf.domain
+  @test r[2] ∈ param_set.real.domain
 
   @test length(subset) == 2
 
