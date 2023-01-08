@@ -1,5 +1,7 @@
 module SolverParameters
 
+using Random
+
 import Base.∈
 import Base.length
 import Base.values

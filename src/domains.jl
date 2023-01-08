@@ -69,6 +69,38 @@ upper(D::RealInterval) = D.upper
   (D.lower_open ? lower(D) < x : lower(D) ≤ x) && (D.upper_open ? x < upper(D) : x ≤ upper(D))
 end
 
+function Base.rand(rng::Random.AbstractRNG, d::RealInterval)
+  r = rand(rng, T)
+  low = lower(d)
+  upp = upper(d)
+  return r * (upp - low) + low
+end
+
+function Base.rand(rng::Random.AbstractRNG, d::RealInterval{T}) where {T <: AbstractFloat}
+  r = rand(rng, T)
+  bnd = 1/eps(T)
+  low = if lower(d) == -Inf || !d.lower_open
+    lower(d)
+  else
+    lower(d) + eps(T)
+  end
+  low = max(low, -bnd)
+  upp = if upper(d) == -Inf || !d.lower_open
+    upper(d)
+  else
+    upper(d) - eps(T)
+  end
+  upp = min(upp, bnd)
+  return r * (upp - low) + low
+end
+
+function Base.rand(rng::Random.AbstractRNG, d::RealInterval{T}) where {T <: Integer}
+  r = rand(rng, T)
+  low = d.lower_open ? lower(d) + 1 : lower(d)
+  upp = d.upper_open ? upper(d) - 1 : upper(d)
+  return r * (upp - low) + low
+end
+
 """
 Integer Domain for discrete variables.
     1. Integer range;
@@ -101,6 +133,8 @@ upper(D::IntegerRange) = D.upper
 
 ∈(x::T, D::IntegerRange{T}) where {T <: Integer} = lower(D) ≤ x ≤ upper(D)
 
+Base.rand(rng::Random.AbstractRNG, d::IntegerRange) = rand(rng, d.lower:d.upper)
+
 """
     BinaryRange{T <: Bool} <: IntegerDomain{T}
 
@@ -118,6 +152,7 @@ end
 lower(D::BinaryRange{Bool}) = false
 upper(D::BinaryRange{Bool}) = true
 ∈(x::T, D::BinaryRange{T}) where {T <: Bool} = true
+Base.rand(rng::Random.AbstractRNG, ::BinaryRange) = rand(rng, Bool)
 
 """
     IntegerSet{T} <: IntegerDomain{T}
@@ -141,6 +176,8 @@ end
 lower(D::IntegerSet{T}) where {T <: Integer} = min(D.set...)
 upper(D::IntegerSet{T}) where {T <: Integer} = max(D.set...)
 
+Base.rand(rng::Random.AbstractRNG, d::IntegerSet) = rand(rng, d.set)
+
 """
 Categorical Domain for categorical variables.
 """
@@ -163,3 +200,4 @@ mutable struct CategoricalSet{T} <: CategoricalDomain{T}
 end
 CategoricalSet() = CategoricalSet(Vector{String}())
 ∈(x::T, D::CategoricalSet{T}) where {T} = x in D.categories
+Base.rand(rng::Random.AbstractRNG, d::CategoricalSet) = rand(rng, Set(d.categories))
