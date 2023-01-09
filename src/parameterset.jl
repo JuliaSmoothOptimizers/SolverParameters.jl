@@ -52,7 +52,11 @@ function Base.rand(rng::Random.AbstractRNG, param_set::P) where {P <: AbstractPa
   return rand(rng, fieldnames(P), param_set)
 end
 
-function Base.rand(rng::Random.AbstractRNG, subset::NTuple{N, Symbol}, param_set::AbstractParameterSet) where {N}
+function Base.rand(
+  rng::Random.AbstractRNG,
+  subset::NTuple{N, Symbol},
+  param_set::AbstractParameterSet,
+) where {N}
   values = Vector{Any}(undef, length(subset))
   for (i, field) in enumerate(subset)
     param = getfield(param_set, field)
