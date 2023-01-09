@@ -78,7 +78,7 @@ end
 
 function Base.rand(rng::Random.AbstractRNG, d::RealInterval{T}) where {T <: AbstractFloat}
   r = rand(rng, T)
-  bnd = 1/eps(T)
+  bnd = 1 / eps(T)
   low = if lower(d) == -Inf || !d.lower_open
     lower(d)
   else
@@ -133,7 +133,7 @@ upper(D::IntegerRange) = D.upper
 
 ∈(x::T, D::IntegerRange{T}) where {T <: Integer} = lower(D) ≤ x ≤ upper(D)
 
-Base.rand(rng::Random.AbstractRNG, d::IntegerRange) = rand(rng, d.lower:d.upper)
+Base.rand(rng::Random.AbstractRNG, d::IntegerRange) = rand(rng, (d.lower):(d.upper))
 
 """
     BinaryRange{T <: Bool} <: IntegerDomain{T}
