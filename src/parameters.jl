@@ -86,18 +86,24 @@ Converts a `value` to the corresponding type of a giver parameter.
 If `T` is an integer, this function will first round the `value`.
 
 Examples:
-```julia
-  real_param = Parameter(1.5, RealInterval(0.0, 2.0), "real_param");
-  a = 1;
-  convert(real_param, a)
-  1.0
+```jldoctest
+real_param = Parameter(1.5, RealInterval(0.0, 2.0), "real_param");
+a = 1;
+convert(real_param, a)
+
+# output
+
+1.0
 ```
 
-```julia
-  int_param = Parameter(1, IntegerRange(1, 4), "int_param");
-  a = 1.6;
-  convert(int_param, a)
-  2
+```jldoctest
+int_param = Parameter(1, IntegerRange(1, 4), "int_param");
+a = 1.6;
+convert(int_param, a)
+
+# output
+
+2
 ```
 """
 function convert(::Parameter{T}, value) where {T <: AbstractFloat}
