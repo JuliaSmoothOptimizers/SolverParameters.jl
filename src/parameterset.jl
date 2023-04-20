@@ -199,8 +199,8 @@ end
 function values_num!(
   subset::NTuple{N, Symbol},
   parameter_set::T,
-  vals::AbstractVector,
-) where {T <: AbstractParameterSet, N}
+  vals::AbstractVector{S},
+) where {T <: AbstractParameterSet, N, S}
   i = 0
   for param_name in subset
     p = getfield(parameter_set, param_name)
