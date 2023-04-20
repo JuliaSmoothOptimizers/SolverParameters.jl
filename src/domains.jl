@@ -70,13 +70,6 @@ upper(D::RealInterval) = D.upper
   (D.lower_open ? lower(D) < x : lower(D) ≤ x) && (D.upper_open ? x < upper(D) : x ≤ upper(D))
 end
 
-function Base.rand(rng::Random.AbstractRNG, d::RealInterval)
-  r = rand(rng, T)
-  low = lower(d)
-  upp = upper(d)
-  return r * (upp - low) + low
-end
-
 function Base.rand(rng::Random.AbstractRNG, d::RealInterval{T}) where {T <: AbstractFloat}
   r = rand(rng, T)
   bnd = 1 / eps(T)
