@@ -3,7 +3,7 @@ export Parameter, AbstractParameter, value, domain, name, check_value, set_value
 """
     AbstractParameter{T}
 
-An Abstract type for parameters of value type `T`.
+An abstract type for parameters of value type `T`.
 """
 abstract type AbstractParameter{T} end
 
@@ -24,7 +24,13 @@ If no domain is specified, the constructor uses (-`typemin(x)`, `typemax(x)`) as
 Examples:
 ```julia
   Parameter(Float64(42))
+```
+
+```julia
   Parameter("A", CategoricalSet(["A", "B", "C", "D"]))
+```
+
+```julia
   Parameter(Int32(5), IntegerRange(Int32(5), Int32(20)))
 ```
 """
@@ -52,32 +58,44 @@ function Parameter(value::T, domain::AbstractDomain{T}; name::String = "") where
   Parameter(value, domain, name)
 end
 
-"""Returns the current value of a parameter."""
+"""
+    value(parameter::Parameter{T})
+
+Returns the current value of a parameter.
+"""
 value(parameter::Parameter{T}) where {T} = parameter.value
 
-"""Returns the domain of a parameter."""
+"""
+    domain(parameter::Parameter{T})
+
+Returns the domain of a parameter.
+"""
 domain(parameter::Parameter{T}) where {T} = parameter.domain
 
-"""Returns the name of a parameter."""
+"""
+    name(parameter::Parameter{T})
+
+Returns the name of a parameter.
+"""
 name(parameter::Parameter{T}) where {T} = parameter.name
 
 """
     convert(::Parameter{T}, value)
 
 Converts a `value` to the corresponding type of a giver parameter.
-If `T` is integer, this function will first round the `value`.
+If `T` is an integer, this function will first round the `value`.
 
 Examples:
 ```julia
-  real_param = Parameter(1.5, RealInterval(0.0, 2.0), "real_param")
-  a = 1
+  real_param = Parameter(1.5, RealInterval(0.0, 2.0), "real_param");
+  a = 1;
   convert(real_param, a)
   1.0
 ```
 
 ```julia
-  int_param = Parameter(1, IntegerRange(1, 4), "int_param")
-  a = 1.6
+  int_param = Parameter(1, IntegerRange(1, 4), "int_param");
+  a = 1.6;
   convert(int_param, a)
   2
 ```

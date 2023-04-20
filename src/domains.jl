@@ -11,14 +11,13 @@ export AbstractDomain,
 
 export lower, upper
 
-"""`AbstractDomain`
+"""`AbstractDomain{T}`
 
 An abstract domain type that superseeds any specific domain implementation.
-Child types should implement the following functions:
 
-- `lower(d::ChildDomain{T})`: return the lower bound of the domain;
-- `upper(d::ChildDomain{T})`: return the upper bound of the domain;
-- `∈(x::T, D::ChildDomain{T})`: return `true` if a value `x` is in the domain and `false` otherwise.
+- `lower(d::AbstractDomain{T})`: return the lower bound of the domain;
+- `upper(d::AbstractDomain{T})`: return the upper bound of the domain;
+- `∈(x::T, D::AbstractDomain{T})`: return `true` if a value `x` is in the domain and `false` otherwise.
 
 See [`RealInterval`](@ref), [`IntegerRange`](@ref), [`IntegerSet`](@ref), [`BinaryRange`](@ref), [`CategoricalSet`](@ref) for concrete implementations.
 
@@ -33,12 +32,14 @@ upper(::AbstractDomain{T}) where {T} =
   throw(DomainError("Upper bound is undefined for this domain."))
 
 """
-Real Domain for continuous variables
+Real domain for continuous variables
 """
 abstract type RealDomain{T <: Real} <: AbstractDomain{T} end
 
 """
-    RealInterval{T <: Integer} <: IntegerDomain{T}
+    RealInterval{T <: Real} <: RealDomain{T}
+
+    RealInterval(lower::T, upper::T; lower_open::Bool = false, upper_open::Bool = false)
 
 Interval of possible values for a real variable.
 
@@ -102,15 +103,17 @@ function Base.rand(rng::Random.AbstractRNG, d::RealInterval{T}) where {T <: Inte
 end
 
 """
-Integer Domain for discrete variables.
-    1. Integer range;
-    2. Integer Set;
-    3. BinaryRange.
+Integer domain for discrete variables:
+  - Integer range;
+  - Integer set;
+  - Binary range.
 """
 abstract type IntegerDomain{T <: Integer} <: AbstractDomain{T} end
 
 """
     IntegerRange{T <: Integer} <: IntegerDomain{T}
+
+    IntegerRange(lower::T, upper::T)
 
 Interval of possible values for an integer variable.
 
@@ -138,6 +141,8 @@ Base.rand(rng::Random.AbstractRNG, d::IntegerRange) = rand(rng, (d.lower):(d.upp
 """
     BinaryRange{T <: Bool} <: IntegerDomain{T}
 
+    BinaryRange()
+
 Binary range for boolean parameters.
 Note: This concrete type is not mutable as it would break the purpose of a binary range.
 
@@ -156,6 +161,8 @@ Base.rand(rng::Random.AbstractRNG, ::BinaryRange) = rand(rng, Bool)
 
 """
     IntegerSet{T} <: IntegerDomain{T}
+
+    IntegerSet(values::Vector{T <: Integer})
 
 Set of possible values for an integer variable.
 
@@ -179,19 +186,28 @@ upper(D::IntegerSet{T}) where {T <: Integer} = max(D.set...)
 Base.rand(rng::Random.AbstractRNG, d::IntegerSet) = rand(rng, d.set)
 
 """
-Categorical Domain for categorical variables.
+Categorical domain for categorical variables.
 """
 abstract type CategoricalDomain{T} <: AbstractDomain{T} end
 
 """
     CategoricalSet{T} <: CategoricalDomain{T}
 
+    CategoricalSet(Vector{T})
+    CategoricalSet()
+
 Set of possible values for a categorical variable.
 
 Examples:
 ```julia
 CategoricalSet()
+```
+
+```julia
 CategoricalSet("A", "B")
+```
+
+```julia
 CategoricalSet(:A, :B)
 ```
 """

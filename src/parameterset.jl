@@ -17,12 +17,20 @@ Example:
 """
 abstract type AbstractParameterSet end
 
-"""Returns the number of parameters in a parameter set."""
+"""
+    length(::AbstractParameterSet)
+
+Return the number of parameters in an `AbstractParameterSet`.
+"""
 function length(::T) where {T <: AbstractParameterSet}
   return length(fieldnames(T))
 end
 
-"""Returns the number of numerical parameters in a parameter set."""
+"""
+    length_num(parameter_set::AbstractParameterSet)
+
+Return the number of numerical parameters in an `AbstractParameterSet`.
+"""
 function length_num(parameter_set::T) where {T <: AbstractParameterSet}
   k = 0
   for param_name in fieldnames(T)
@@ -76,13 +84,21 @@ function fieldnames_num(parameter_set::T) where {T <: AbstractParameterSet}
   return Tuple(nn)
 end
 
-"""Returns the name of the parameters in a parameter set."""
+"""
+    names(parameter_set::AbstractParameterSet)
+
+Return the name of the parameters in an `AbstractParameterSet`.
+"""
 function names(parameter_set::T) where {T <: AbstractParameterSet}
   n = Vector{String}(undef, length(parameter_set))
   return names!(parameter_set, n)
 end
 
-"""Returns the name of the parameters in a parameter set in place."""
+"""
+    names!(parameter_set::AbstractParameterSet, vals::Vector{String})
+
+Return the name of the parameters in an `AbstractParameterSet` in place.
+"""
 function names!(parameter_set::T, vals::Vector{String}) where {T <: AbstractParameterSet}
   length(parameter_set) == length(vals) || error(
     "Error: 'vals' should have length $(length(parameter_set)), but has length $(length(vals)).",
@@ -94,7 +110,11 @@ function names!(parameter_set::T, vals::Vector{String}) where {T <: AbstractPara
   return vals
 end
 
-"""Set names of parameters to their fieldnames."""
+"""
+    set_names!(parameter_set::AbstractParameterSet)
+
+Set the names of parameters in the `AbstractParameterSet` to their fieldnames.
+"""
 function set_names!(parameter_set::T) where {T <: AbstractParameterSet}
   for param_name in fieldnames(T)
     p = getfield(parameter_set, param_name)
@@ -102,7 +122,13 @@ function set_names!(parameter_set::T) where {T <: AbstractParameterSet}
   end
 end
 
-"""Returns current values of each parameter in a parameter set."""
+"""
+    values(parameter_set::AbstractParameterSet)
+    values(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet)
+
+Return a vector with the current values of each parameter in an `AbstractParameterSet`.
+Only a `subset` is returned if an `NTuple` is given.
+"""
 function values(parameter_set::T) where {T <: AbstractParameterSet}
   vals = Vector{Any}(undef, length(parameter_set))
   return values!(parameter_set, vals)
@@ -113,7 +139,13 @@ function values(subset::NTuple{N, Symbol}, parameter_set::T) where {T <: Abstrac
   return values!(subset, parameter_set, vals)
 end
 
-"""Returns current values of each parameter in a parameter set in place."""
+"""
+    values!(parameter_set::AbstractParameterSet, vals::AbstractVector)
+    values!(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet, vals::AbstractVector)
+
+Return the current values of each parameter in an `AbstractParameterSet` in place.
+Only a `subset` is returned if an `NTuple` is given.
+"""
 function values!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
   return values!(fieldnames(T), parameter_set, vals)
 end
@@ -132,7 +164,13 @@ function values!(
   return vals
 end
 
-"""Returns current values of each numerical parameter in a parameter set."""
+"""
+    values_num(parameter_set::AbstractParameterSet)
+    values_num(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet)
+
+Return a vector with the current values of each numerical parameter in an `AbstractParameterSet`.
+Only a `subset` is returned if an `NTuple` is given.
+"""
 function values_num(parameter_set::T) where {T <: AbstractParameterSet}
   vals = Vector{Float64}(undef, length_num(parameter_set))
   return values_num!(parameter_set, vals)
@@ -147,16 +185,22 @@ function values_num(
   return values_num!(Tuple(fields), parameter_set, vals)
 end
 
-"""Returns current values of each numerical parameter in a parameter set in place."""
-function values_num!(parameter_set::T, vals::AbstractVector{S}) where {T <: AbstractParameterSet, S}
+"""
+    values_num!(parameter_set::AbstractParameterSet, vals::AbstractVector)
+    values_num!(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet, vals::AbstractVector)
+
+Return the current values of each numerical parameter in an `AbstractParameterSet` in place.
+Only a `subset` is returned if an `NTuple` is given.
+"""
+function values_num!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
   return values_num!(fieldnames_num(parameter_set), parameter_set, vals)
 end
 
 function values_num!(
   subset::NTuple{N, Symbol},
   parameter_set::T,
-  vals::AbstractVector{S},
-) where {T <: AbstractParameterSet, S, N}
+  vals::AbstractVector,
+) where {T <: AbstractParameterSet, N}
   i = 0
   for param_name in subset
     p = getfield(parameter_set, param_name)
@@ -168,7 +212,13 @@ function values_num!(
   return vals
 end
 
-"""Updates the values of a parameter set by the values given in a vector of values."""
+"""
+    set_values!(parameter_set::AbstractParameterSet, new_values::AbstractVector)
+    set_values!(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet, new_values::AbstractVector)
+
+Update the values of an `AbstractParameterSet` with the values given in the vector `new_values`.
+Only a `subset` is updated if an `NTuple` is given.
+"""
 function set_values!(parameter_set::T, new_values::AbstractVector) where {T <: AbstractParameterSet}
   return set_values!(fieldnames(T), parameter_set, new_values)
 end
@@ -187,7 +237,13 @@ function set_values!(
   end
 end
 
-"""Updates the numerical values of a parameter set by the values given in a vector of values."""
+"""
+    set_values_num!(parameter_set::AbstractParameterSet, new_values::AbstractVector)
+    set_values_num!(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet, new_values::AbstractVector)
+
+Update the numerical values of an `AbstractParameterSet` with the values given in the vector `new_values`.
+Only a `subset` is updated if an `NTuple` is given.
+"""
 function set_values_num!(
   parameter_set::T,
   new_values::AbstractVector,
@@ -212,7 +268,12 @@ function set_values_num!(
   return new_values
 end
 
-"""Returns lower bounds of each numerical parameter in a parameter set."""
+"""
+    lower_bounds(parameter_set::AbstractParameterSet)
+    lower_bounds(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet)
+
+Return a vector with the lower bounds of each numerical parameter in an `AbstractParameterSet`.
+"""
 function lower_bounds(parameter_set::T) where {T <: AbstractParameterSet}
   lower_bounds = Vector{Any}(undef, length_num(parameter_set))
   return lower_bounds!(parameter_set, lower_bounds)
@@ -227,7 +288,12 @@ function lower_bounds(
   return lower_bounds!(Tuple(fields), parameter_set, lower_bounds)
 end
 
-"""Returns lower bounds of each numerical parameter in a parameter set in place."""
+"""
+    lower_bounds!(parameter_set::AbstractParameterSet, vals::AbstractVector)
+    lower_bounds!(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet, vals::AbstractVector)
+
+Return the lower bounds of each numerical parameter in an `AbstractParameterSet` in place.
+"""
 function lower_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
   return lower_bounds!(fieldnames_num(parameter_set), parameter_set, vals)
 end
@@ -249,7 +315,12 @@ function lower_bounds!(
   return vals
 end
 
-"""Function that returns upper bounds of each numerical parameter in a parameter set."""
+"""
+    upper_bounds(parameter_set::AbstractParameterSet)
+    upper_bounds(subset::NTuple{N, Symbol}, parameter_set::AbstractParameterSet)
+
+Return a vector with the upper bounds of each numerical parameter in an `AbstractParameterSet`.
+"""
 function upper_bounds(parameter_set::T) where {T <: AbstractParameterSet}
   upper_bounds = Vector{Any}(undef, length_num(parameter_set))
   return upper_bounds!(parameter_set, upper_bounds)
@@ -264,7 +335,12 @@ function upper_bounds(
   return upper_bounds!(Tuple(subset), parameter_set, upper_bounds)
 end
 
-"""Returns upper bounds of each numerical parameter in a parameter set in place."""
+"""
+    upper_bounds!(parameter_set::T, vals::AbstractVector)
+    upper_bounds!(subset::NTuple{N, Symbol}, parameter_set::T, vals::AbstractVector)
+
+Return the lower bounds of each numerical parameter in an `AbstractParameterSet` in place.
+"""
 function upper_bounds!(parameter_set::T, vals::AbstractVector) where {T <: AbstractParameterSet}
   return upper_bounds!(fieldnames_num(parameter_set), parameter_set, vals)
 end
