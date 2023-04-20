@@ -27,6 +27,9 @@ end
   @test_throws DomainError lower(d)
   @test_throws DomainError upper(d)
   @test rand(d) ∈ d
+
+  d = CategoricalSet()
+  @test d.categories == Vector{String}()
 end
 
 @testset "Testing Real domains" verbose = true begin
