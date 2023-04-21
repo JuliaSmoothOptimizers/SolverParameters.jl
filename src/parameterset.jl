@@ -52,9 +52,9 @@ function ∈(x::AbstractVector, parameter_set::T) where {T <: AbstractParameterS
 end
 
 function Base.rand(subset::NTuple{N, Symbol}, param_set::AbstractParameterSet) where {T, N}
-  return rand(MersenneTwister(0), subset, param_set)
+  return rand(Random.default_rng(), subset, param_set)
 end
-Base.rand(param_set::AbstractParameterSet) = rand(MersenneTwister(0), param_set)
+Base.rand(param_set::AbstractParameterSet) = rand(Random.default_rng(), param_set)
 
 function Base.rand(rng::Random.AbstractRNG, param_set::P) where {P <: AbstractParameterSet}
   return rand(rng, fieldnames(P), param_set)

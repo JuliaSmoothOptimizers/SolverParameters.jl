@@ -29,7 +29,7 @@ end
   @test lower_bounds(param_set) == [-Inf, 0.0, 5, 1, false]
   @test upper_bounds(param_set) == [Inf, 1.0, 20, 7, true]
   @test values(param_set) == [F(42), F(1.5e-10), I(5), I(5), true]
-  @show rand(param_set)
+  @test rand(param_set) != rand(param_set)
   @test rand(param_set) ∈ param_set
   @testset "Real Parameter" verbose = true begin
     params = [param_set.real_inf, param_set.real]
