@@ -28,10 +28,12 @@ end
                                                                fieldnames(typeof(param_set))
     @test name(getfield(param_set, f_name)) == string(f_name)
   end
+
   @test lower_bounds(param_set) == Any[-Inf, 0.0, typemin(I), 5, 1, false]
   @test upper_bounds(param_set) == Any[Inf, 1.0, typemax(I), 20, 7, true]
   @test values(param_set) == [F(42), F(1.5e-10), I(5), I(5), I(5), true]
-  @show rand(param_set)
+  @test rand(param_set) != rand(param_set)
+
   @test rand(param_set) ∈ param_set
   @testset "Real Parameter" verbose = true begin
     params = [param_set.real_inf, param_set.real]
