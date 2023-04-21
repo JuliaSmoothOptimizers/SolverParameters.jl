@@ -95,7 +95,8 @@ end
   param_set = MockSolverParamSet(I, F)
   set_names!(param_set)
 
-  @test names(param_set) == Vector{String}(["real_inf", "real", "int_inf", "int_r", "int_s", "boolean"])
+  @test names(param_set) ==
+        Vector{String}(["real_inf", "real", "int_inf", "int_r", "int_s", "boolean"])
   @test length(param_set) == 6
   if check_allocations
     a = @allocated length(param_set)
