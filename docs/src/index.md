@@ -8,7 +8,7 @@ Documentation for [SolverParameters](https://github.com/JuliaSmoothOptimizers/So
 
 # Example
 
-This examle describes a simple parameter set with a real, a categorical and an integer parameter.
+This example describes a simple parameter set with a real, a categorical and an integer parameter.
 
 ```@example ex1
 using SolverParameters
@@ -70,4 +70,12 @@ Most of the functionalities described above can be used for only a subset of par
 ```@example ex1
 subset = (:real_inf, :real)
 values(subset, param_set)
+```
+
+The getter are also available in place, which allows to pre-allocate the type of vector.
+
+```@example ex1
+subset = (:real_inf,)
+tmp = zeros(1)
+values_num!(subset, param_set, tmp)
 ```

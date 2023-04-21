@@ -1,6 +1,7 @@
 struct MockSolverParamSet{I, F} <: AbstractParameterSet
   real_inf::Parameter{F, RealInterval{F}}
   real::Parameter{F, RealInterval{F}}
+  int_inf::Parameter{I, IntegerRange{I}}
   int_r::Parameter{I, IntegerRange{I}}
   int_s::Parameter{I, IntegerSet{I}}
   boolean::Parameter{Bool, BinaryRange{Bool}}
@@ -10,6 +11,7 @@ function MockSolverParamSet(I::DataType, F::DataType)
   MockSolverParamSet(
     Parameter(F(42)),
     Parameter(F(1.5e-10), RealInterval(F(0.0), F(1.0))),
+    Parameter(I(5)),
     Parameter(I(5), IntegerRange(I(5), I(20))),
     Parameter(I(5), IntegerSet(I[2, 4, 5, 1, 3, 7])),
     Parameter(true, BinaryRange()),
@@ -26,10 +28,12 @@ end
                                                                fieldnames(typeof(param_set))
     @test name(getfield(param_set, f_name)) == string(f_name)
   end
-  @test lower_bounds(param_set) == [-Inf, 0.0, 5, 1, false]
-  @test upper_bounds(param_set) == [Inf, 1.0, 20, 7, true]
-  @test values(param_set) == [F(42), F(1.5e-10), I(5), I(5), true]
+
+  @test lower_bounds(param_set) == Any[-Inf, 0.0, typemin(I), 5, 1, false]
+  @test upper_bounds(param_set) == Any[Inf, 1.0, typemax(I), 20, 7, true]
+  @test values(param_set) == [F(42), F(1.5e-10), I(5), I(5), I(5), true]
   @test rand(param_set) != rand(param_set)
+
   @test rand(param_set) ∈ param_set
   @testset "Real Parameter" verbose = true begin
     params = [param_set.real_inf, param_set.real]
@@ -91,15 +95,15 @@ end
   param_set = MockSolverParamSet(I, F)
   set_names!(param_set)
 
-  @test names(param_set) == Vector{String}(["real_inf", "real", "int_r", "int_s", "boolean"])
-  @test length(param_set) == 5
+  @test names(param_set) == Vector{String}(["real_inf", "real", "int_inf", "int_r", "int_s", "boolean"])
+  @test length(param_set) == 6
   if check_allocations
     a = @allocated length(param_set)
     @test a == 0
   end
-  @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5, true])
-  set_values!(param_set, Vector{Any}([1000.1, 2 / 3, 20, 1, false]))
-  @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 20, 1, false])
+  @test values(param_set) == Vector{Any}([42, 1.5e-10, 5, 5, 5, true])
+  set_values!(param_set, Vector{Any}([1000.1, 2 / 3, 3, 20, 1, false]))
+  @test values(param_set) == Vector{Any}([1000.1, 2 / 3, 3, 20, 1, false])
   @test rand(param_set) ∈ param_set
 end
 
