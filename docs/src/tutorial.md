@@ -1,4 +1,4 @@
-# Advanced-usage of DCI
+# Tutorial SolverParameters.jl
 
 ## Contents
 
