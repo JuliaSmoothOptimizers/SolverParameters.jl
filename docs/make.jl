@@ -16,7 +16,7 @@ makedocs(;
     canonical = "https://MonssafToukal.github.io/SolverParameters.jl",
     assets = ["assets/style.css"],
   ),
-  pages = ["Home" => "index.md", "Reference" => "reference.md"],
+  pages = ["Home" => "index.md", "Tutorial" => "tutorial.md", "Reference" => "reference.md"],
 )
 
 deploydocs(;
