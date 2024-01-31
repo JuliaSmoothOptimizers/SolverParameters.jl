@@ -1,6 +1,6 @@
 name = "SolverParameters"
 uuid = "d076d87d-d1f9-4ea3-a44b-64b4cdd1e470"
-authors = ["Monssaf Toukal <tmonssaf@gmail.com> and contributors"]
+authors = ["Tangi Migot <tangi.migot@gmail.com>, Monssaf Toukal <tmonssaf@gmail.com> and contributors"]
 version = "0.1.0"
 
 [deps]
