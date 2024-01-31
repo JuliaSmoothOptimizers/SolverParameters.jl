@@ -51,7 +51,7 @@ function ∈(x::AbstractVector, parameter_set::T) where {T <: AbstractParameterS
   return true
 end
 
-function Base.rand(subset::NTuple{N, Symbol}, param_set::AbstractParameterSet) where {T, N}
+function Base.rand(subset::NTuple{N, Symbol}, param_set::AbstractParameterSet) where {N}
   return rand(Random.default_rng(), subset, param_set)
 end
 Base.rand(param_set::AbstractParameterSet) = rand(Random.default_rng(), param_set)
