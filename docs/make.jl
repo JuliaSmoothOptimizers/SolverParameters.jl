@@ -8,7 +8,7 @@ makedocs(;
   doctest = true,
   linkcheck = false,
   strict = false,
-  authors = "Abel Soares Siqueira <abel.s.siqueira@gmail.com> and contributors",
+  authors = "Tangi Migot, Monssaf Toukal and contributors",
   repo = "https://github.com/JuliaSmoothOptimizers/SolverParameters.jl/blob/{commit}{path}#{line}",
   sitename = "SolverParameters.jl",
   format = Documenter.HTML(;
