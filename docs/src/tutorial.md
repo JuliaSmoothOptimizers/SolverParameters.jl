@@ -59,7 +59,7 @@ nw ∈ param_set
 ```
 
 ```@example ex1
-set_values(param_set, nw)
+set_values!(param_set, nw)
 ```
 
 The number of parameters or numerical parameters is accessible with `length`.
