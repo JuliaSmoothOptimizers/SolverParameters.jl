@@ -7,14 +7,29 @@ struct MockSolverParamSet{I, F} <: AbstractParameterSet
   boolean::Parameter{Bool, BinaryRange{Bool}}
 end
 
+const real_inf = DefaultParameter(F -> F(42), "42")
+@test "$real_inf" == "42"
+const real = DefaultParameter(F -> F(1.5e-10), "1.5e-10")
+@test "$real" == "1.5e-10"
+const int_inf = DefaultParameter(I -> I(5), "5")
+@test "$int_inf" == "5"
+const int_r = DefaultParameter(I -> I(5), "5")
+@test "$int_r" == "5"
+const int_s = DefaultParameter(I -> I(5), "5")
+@test "$int_s" == "5"
+const boolean = DefaultParameter(true)
+@test "$boolean" == "true"
+
+show(real_inf)
+
 function MockSolverParamSet(I::DataType, F::DataType)
   MockSolverParamSet(
-    Parameter(F(42)),
-    Parameter(F(1.5e-10), RealInterval(F(0.0), F(1.0))),
-    Parameter(I(5)),
-    Parameter(I(5), IntegerRange(I(5), I(20))),
-    Parameter(I(5), IntegerSet(I[2, 4, 5, 1, 3, 7])),
-    Parameter(true, BinaryRange()),
+    Parameter(get(real_inf, F)),
+    Parameter(get(real, F), RealInterval(F(0.0), F(1.0))),
+    Parameter(get(int_inf, I)),
+    Parameter(get(int_r, I), IntegerRange(I(5), I(20))),
+    Parameter(get(int_s, I), IntegerSet(I[2, 4, 5, 1, 3, 7])),
+    Parameter(get(boolean), BinaryRange()),
   )
 end
 
