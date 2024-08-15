@@ -14,8 +14,8 @@ Constructors
    DefaultParameter(default, str)
 """
 struct DefaultParameter{Dflt}
-   default::Dflt
-   str::String
+  default::Dflt
+  str::String
 end
 DefaultParameter(default) = DefaultParameter(default, string(default))
 
@@ -26,6 +26,6 @@ end
 function Base.get(default_parameter::DefaultParameter, args...)
   default_parameter.default(args...)
 end
-function Base.get(default_parameter::DefaultParameter{<:Union{Number,Symbol}}, args...)
+function Base.get(default_parameter::DefaultParameter{<:Union{Number, Symbol}}, args...)
   default_parameter.default
 end
