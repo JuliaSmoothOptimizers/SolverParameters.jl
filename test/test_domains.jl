@@ -57,6 +57,16 @@ end
       @test rand(d_lopen) ∈ d_lopen
       @test rand(d_ropen) ∈ d_ropen
       @test rand(d_open) ∈ d_open
+      @testset "enum" verbose = true for d in [d_closed, d_lopen, d_ropen, d_open]
+        i = 0
+        for elt in enum(d)
+          @test eltype(elt) == T
+          i += 1
+          if i == 3
+            break
+          end
+        end
+      end
     end
   end
   @testset "IntegerRange $T" verbose = true for T in (Int32, Int64)
@@ -71,19 +81,26 @@ end
       @test_throws ErrorException IntegerRange(max, min)
     end
     @test rand(d) ∈ d
+    @test enum(d) == typemin(T):1:typemax(T)
+    @test enum(d, step = 2) == typemin(T):2:typemax(T)
   end
   @testset "Binary range" begin
     b = BinaryRange()
     @test lower(b) == false
     @test upper(b) == true
     @test rand(b) ∈ b
+    for elt in enum(b)
+      @test eltype(elt) == Bool
+    end
   end
   @testset "IntegerSet" verbose = true begin
-    d = IntegerSet([2, 4, 5, 1, 3, 7])
+    vecset = [2, 4, 5, 1, 3, 7]
+    d = IntegerSet(vecset)
     @test lower(d) == 1
     @test upper(d) == 7
     @test (4 ∈ d) == true
     @test (6 ∈ d) == false
     @test rand(d) ∈ d
+    enum(d) == Set(vecset)
   end
 end

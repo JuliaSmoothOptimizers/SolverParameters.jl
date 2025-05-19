@@ -73,6 +73,25 @@ function Base.rand(
   return values
 end
 
+"""
+    enum(::AbstractParameterSet; step, kwargs...)
+    enum(subset::NTuple{N, Symbol}, ::AbstractParameterSet; step, kwargs...)
+
+Return an iterable object of values in the AbstractParameterSet with step `step`.
+"""
+function enum(subset::NTuple{N, Symbol}, param_set::AbstractParameterSet; kwargs...) where {N}
+  vec = Vector{Any}(undef, length(subset))
+  for (i, field) in enumerate(subset)
+    param = getfield(param_set, field)
+    vec[i] = (field, enum(param; kwargs...))
+  end
+  return vec
+end
+
+function enum(param_set::P; kwargs...) where {P <: AbstractParameterSet}
+  return enum(fieldnames(P), param_set; kwargs...)
+end
+
 function fieldnames_num(parameter_set::T) where {T <: AbstractParameterSet}
   nn = collect(fieldnames(T))
   for (i, param_name) in enumerate(nn)

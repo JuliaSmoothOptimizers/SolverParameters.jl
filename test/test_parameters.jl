@@ -214,3 +214,12 @@ end
   @test upper_bounds!(subset, param_set, b) == [Inf]
   @test eltype(b) == Float64
 end
+
+@testset "Enum parameters in ParameterSet" begin
+  param_set = CatMockSolverParamSet()
+  enum(param_set) == [
+    (:real_inf, -6.7108864e7:1.4901161193847656e-8:6.7108864e7),
+    (:real, ["A", "B", "C", "D"]),
+    (:int_r, 5:1:20)
+  ]
+end
