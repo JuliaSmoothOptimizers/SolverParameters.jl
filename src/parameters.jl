@@ -143,3 +143,12 @@ function set_value!(parameter::Parameter{T}, new_value::T) where {T}
   check_value(domain(parameter), new_value)
   parameter.value = new_value
 end
+
+"""
+    enum(::Parameter{T}; step, kwargs...)
+
+Return an iterable object of values in the domain `d` with step `step`.
+"""
+function enum(parameter::Parameter{T}; kwargs...) where {T}
+  return enum(domain(parameter); kwargs...)
+end

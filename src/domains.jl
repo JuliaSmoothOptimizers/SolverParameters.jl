@@ -24,6 +24,13 @@ See [`RealInterval`](@ref), [`IntegerRange`](@ref), [`IntegerSet`](@ref), [`Bina
 """
 abstract type AbstractDomain{T} end
 
+"""
+    enum(::AbstractDomain{T}; step, kwargs...)
+
+Return an iterable object of values in the domain `d` with step `step`.
+"""
+function enum end
+
 ∈(::T, ::AbstractDomain{T}) where {T} = false
 lower(::AbstractDomain{T}) where {T} =
   throw(DomainError("Lower bound is undefined for this domain."))
@@ -94,6 +101,29 @@ function Base.rand(rng::Random.AbstractRNG, d::RealInterval{T}) where {T <: Inte
   return r * (upp - low) + low
 end
 
+function enum(d::RealInterval{T}; step = sqrt(eps(T)), kwargs...) where {T <: AbstractFloat}
+  bnd = 1 / sqrt(eps(T))
+  low = if lower(d) == -Inf || !d.lower_open
+    lower(d)
+  else
+    lower(d) + eps(T)
+  end
+  low = max(low, -bnd)
+  upp = if upper(d) == -Inf || !d.lower_open
+    upper(d)
+  else
+    upper(d) - eps(T)
+  end
+  upp = min(upp, bnd)
+  return range(low, upp, step	= step)
+end
+
+function enum(d::RealInterval{T}; step = 1, kwargs...) where {T <: Integer}
+  low = d.lower_open ? lower(d) + 1 : lower(d)
+  upp = d.upper_open ? upper(d) - 1 : upper(d)
+  return range(low, upp, step = step)
+end
+
 """
 Integer domain for discrete variables:
   - Integer range;
@@ -129,6 +159,7 @@ upper(D::IntegerRange) = D.upper
 ∈(x::T, D::IntegerRange{T}) where {T <: Integer} = lower(D) ≤ x ≤ upper(D)
 
 Base.rand(rng::Random.AbstractRNG, d::IntegerRange) = rand(rng, (d.lower):(d.upper))
+enum(d::IntegerRange; step = 1) = range(d.lower, d.upper, step = step)
 
 """
     BinaryRange{T <: Bool} <: IntegerDomain{T}
@@ -150,6 +181,7 @@ lower(D::BinaryRange{Bool}) = false
 upper(D::BinaryRange{Bool}) = true
 ∈(x::T, D::BinaryRange{T}) where {T <: Bool} = true
 Base.rand(rng::Random.AbstractRNG, ::BinaryRange) = rand(rng, Bool)
+enum(::BinaryRange; kwargs...) = (false, true)
 
 """
     IntegerSet{T} <: IntegerDomain{T}
@@ -175,7 +207,8 @@ end
 lower(D::IntegerSet{T}) where {T <: Integer} = min(D.set...)
 upper(D::IntegerSet{T}) where {T <: Integer} = max(D.set...)
 
-Base.rand(rng::Random.AbstractRNG, d::IntegerSet) = rand(rng, d.set)
+Base.rand(rng::Random.AbstractRNG, D::IntegerSet) = rand(rng, D.set)
+enum(D::IntegerSet; kwargs...) = D.set
 
 """
 Categorical domain for categorical variables.
@@ -209,3 +242,4 @@ end
 CategoricalSet() = CategoricalSet(Vector{String}())
 ∈(x::T, D::CategoricalSet{T}) where {T} = x in D.categories
 Base.rand(rng::Random.AbstractRNG, d::CategoricalSet) = rand(rng, Set(d.categories))
+enum(d::CategoricalSet) = d.categories
