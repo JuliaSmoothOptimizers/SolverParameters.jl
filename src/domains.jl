@@ -115,7 +115,7 @@ function enum(d::RealInterval{T}; step = sqrt(eps(T)), kwargs...) where {T <: Ab
     upper(d) - eps(T)
   end
   upp = min(upp, bnd)
-  return range(low, upp, step	= step)
+  return range(low, upp, step = step)
 end
 
 function enum(d::RealInterval{T}; step = 1, kwargs...) where {T <: Integer}
