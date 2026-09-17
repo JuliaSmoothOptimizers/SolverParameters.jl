@@ -3,7 +3,6 @@
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaSmoothOptimizers.github.io/SolverParameters.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaSmoothOptimizers.github.io/SolverParameters.jl/dev)
 [![Build Status](https://github.com/JuliaSmoothOptimizers/SolverParameters.jl/workflows/CI/badge.svg)](https://github.com/JuliaSmoothOptimizers/SolverParameters.jl/actions)
-[![Build Status](https://api.cirrus-ci.com/github/JuliaSmoothOptimizers/SolverParameters.jl.svg)](https://cirrus-ci.com/github/JuliaSmoothOptimizers/SolverParameters.jl)
 [![Docs workflow Status](https://github.com/JuliaSmoothOptimizers/SolverParameters.jl/actions/workflows/Docs.yml/badge.svg?branch=main)](https://github.com/JuliaSmoothOptimizers/SolverParameters.jl/actions/workflows/Docs.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/JuliaSmoothOptimizers/SolverParameters.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaSmoothOptimizers/SolverParameters.jl)
 
